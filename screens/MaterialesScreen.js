@@ -208,7 +208,7 @@ const handleEditVid = (Vidrio) => {
              />
 
         <Button
-                title="Agregar"
+                title="Agregar nuevo Vidrio"
                 buttonStyle={styles.updateButton}
                 onPress={() => navigation.navigate('NuevoVidrio')}
               />     
