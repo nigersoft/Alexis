@@ -14,8 +14,8 @@ const EditarVidrioScrm = ({ route, navigation }) => {
   useEffect(() => {
     if (Vidrio) {
       setDescripcion(Vidrio.Descripcion);
-      setCosto(Vidrio.Costo);
-       
+      setCosto(String(Vidrio.Costo));
+     // Alert.alert(`Costo: ${Costo}, Descripcion: ${Descripcion}`)
     }
   }, [Vidrio]);
 
@@ -73,7 +73,7 @@ const EditarVidrioScrm = ({ route, navigation }) => {
           style={styles.input}
           value={Costo}
           onChangeText={setCosto}
-          //keyboardType="numeric"
+          keyboardType="numeric"
           placeholder="Costo"
         />
 

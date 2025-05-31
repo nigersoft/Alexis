@@ -19,8 +19,8 @@ import { getDBConnection, getAllVidrios, deleteVidrio,getAllMateriales, update_M
   const [vidrios,setVidrios] = useState([]);
 
  ///// Cargar los vidrios de la DB ///
-const LoadVidrios = async(db)=>{
- const listaVidrios= await getAllVidrios(db)
+const LoadVidrios = async(cnx)=>{
+ const listaVidrios= await getAllVidrios(cnx)
  setVidrios(listaVidrios);
 }
 
@@ -197,6 +197,7 @@ const handleEditVid = (Vidrio) => {
        <FlatList
                data={vidrios}
                keyExtractor={(item) => item.Id.toString()}
+               
                renderItem={({ item }) => (
                  <VidrioItem
                    Vidrio={item}
