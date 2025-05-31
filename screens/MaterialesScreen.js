@@ -210,7 +210,7 @@ const handleEditVid = (Vidrio) => {
 
         <Button
                 title="Agregar nuevo Vidrio"
-                buttonStyle={styles.updateButton}
+                buttonStyle={styles.VidButton}
                 onPress={() => navigation.navigate('NuevoVidrio')}
               />     
       
@@ -292,6 +292,12 @@ const styles = StyleSheet.create({
   updateButton: {
     borderRadius: 8,
     marginTop: 16,
+    backgroundColor: '#2089dc',
+  },
+  VidButton: {
+    
+    borderRadius: 8,
+    marginBottom:50,
     backgroundColor: '#2089dc',
   },
   item: { flexDirection: 'row', justifyContent: 'space-between', padding: 8 },
