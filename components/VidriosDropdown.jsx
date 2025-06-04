@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { getDBConnection,getAllClientes} from '../ModuloDb/MDb.js';
+import { getDBConnection,getAllVidrios} from '../ModuloDb/MDb.js';
 
 
 
-const ClientesDropdown = ({ onChange }) => {
+const VidriosDropdown = ({ onChange }) => {
 
-const [clientes, setClientes] = useState([]);
+const [vidrios, setVidrios] = useState([]);
 const [selected, setSelected] = useState(null);
 
-const loadClientes = async(cnx)=>{
- const listaClientes= await getAllClientes(cnx)
+const loadVidrios = async(cnx)=>{
+ const listaVidrios= await getAllVidrios(cnx)
  
-  const dropdownData = listaClientes.map(client => ({
-          label:client.Nombre,
-          value: client.Id,
-          apellido: client.Apellido,
+  const dropdownData = listaVidrios.map(vid => ({
+          label:vid.Descripcion,
+          value: vid.Id,
+          //apellido: client.Apellido,
         }));
 
-  setClientes(dropdownData);      
+  setVidrios(dropdownData);      
 }
 
 
@@ -30,11 +30,11 @@ useEffect(() => {
       try {
         const connection = await getDBConnection();
         
-       await loadClientes(connection);
+       await loadVidrios(connection);
 
         // Controla los errores
       } catch (error) {
-        console.error('Error cargando Clientes:', error);
+        console.error('Error cargando Vidrios:', error);
       } 
     })();
   }, []);
@@ -53,15 +53,15 @@ return (
       
         <Dropdown
           style={styles.dropdown}
-          data={clientes}
+          data={vidrios}
           search
-          labelField="label" 
+          labelField="label"
           valueField="value"
-          placeholder="-- Elige cliente--"
+          placeholder="-- Elige un Vidrio --"
           renderItem={item => (
             <View style={styles.item}>
               <Text>{item.label}</Text>
-              <Text style={styles.apellido}>{item.apellido}</Text>
+             
             </View>
           )}
           value={selected}
@@ -110,4 +110,4 @@ const styles = StyleSheet.create({
 
 
 
-export default ClientesDropdown;
+export default VidriosDropdown;

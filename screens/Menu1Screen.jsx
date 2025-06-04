@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput,ScrollView} from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { View, StyleSheet, TextInput,ScrollView,Alert} from 'react-native';
 import { color } from 'react-native-elements/dist/helpers';
 import { Text, Checkbox } from 'react-native-paper';
 import { Button , Divider} from 'react-native-elements';
 import ClientesDropdown from '../components/ClientesDropdown';
+import VidriosDropdown from '../components/VidriosDropdown';
+import { getDBConnection} from '../ModuloDb/MDb.js';
+
+import { CostoMateriales} from '../services/ModuloFunciones.jsx';
 
 export default function Menu1Screen() {
   const [checked, setChecked] = useState(false);
@@ -11,6 +15,15 @@ export default function Menu1Screen() {
   const[Base,setBase]= useState()
   const[Nombre, setNombre] = useState()
   const[idCliente,setIdCliente] = useState()
+  
+
+  const db = getDBConnection();
+  
+
+  const msgPrueba = ()=>{
+    const costoM = CostoMateriales(10,10,db);
+    Alert.alert(`Costo Materiales: ${costoM}`)
+  }
 
   const handleClientesChange = (item) => {
     //console.log('Cliente seleccionado:', item);
@@ -18,30 +31,33 @@ export default function Menu1Screen() {
     console.log('Cliente seleccionado:', idCliente);
   };
 
+  
+
 
   return (
     <ScrollView style={styles.container}>
 
       <View style={styles.formContainer}>
-
+       
         <View style={styles.checkboxContainer}>
-
-
-          <ClientesDropdown onChange={handleClientesChange} />
-
+           
+          <View style={styles.ClienteCointainer}>
+             <Text style={styles.label}>Cliente:</Text>
+             <ClientesDropdown onChange={handleClientesChange} />
+          </View>
           
-
           <Text style={styles.label}>Puerta</Text>
           <Checkbox
           status={checked ? 'checked' : 'unchecked'}
           onPress={() => setChecked(!checked)}
           />  
-        
-
-        
+                  
         </View>
-        
+
+        <Text style={styles.label}>Vidrio:</Text>
+        <VidriosDropdown onChange={handleClientesChange} />
         <Text style={styles.label}>Nombre:</Text>
+       
               <TextInput
                 style={styles.input}
                 value={Nombre}
@@ -87,12 +103,12 @@ export default function Menu1Screen() {
          <Button
                    title="Agregar"
                    buttonStyle={styles.updateButton}
-                   //onPress={}
+                   onPress={msgPrueba}
                  />     
 
-      <Text>Aquí van a ir las cotizaciones</Text>
+      
       <Divider style={{ backgroundColor: '#CED0CE', marginVertical: 12 }} />
-       
+       <Text>Aquí van a ir las cotizaciones</Text>
        
     </View>
 
@@ -121,6 +137,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 16,
+    
   },
   label: {
     fontSize: 16,
@@ -155,6 +172,11 @@ const styles = StyleSheet.create({
   MedidaContiner:{
   marginLeft: 10,
   marginRight: 10
+  },
+
+ ClienteCointainer:{
+    display:'flex',
+    flexDirection:'column',
   },
 
 });
