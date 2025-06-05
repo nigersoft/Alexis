@@ -1,13 +1,13 @@
 import React, { useState,useEffect } from 'react';
 import { View, StyleSheet, TextInput,ScrollView,Alert} from 'react-native';
-import { color } from 'react-native-elements/dist/helpers';
+
 import { Text, Checkbox } from 'react-native-paper';
 import { Button , Divider} from 'react-native-elements';
 import ClientesDropdown from '../components/ClientesDropdown';
 import VidriosDropdown from '../components/VidriosDropdown';
 import { getDBConnection} from '../ModuloDb/MDb.js';
 
-import { CostoMateriales} from '../services/ModuloFunciones.jsx';
+import { suma} from '../services/ModuloFunciones.jsx';
 
 export default function Menu1Screen() {
   const [checked, setChecked] = useState(false);
@@ -15,13 +15,15 @@ export default function Menu1Screen() {
   const[Base,setBase]= useState()
   const[Nombre, setNombre] = useState()
   const[idCliente,setIdCliente] = useState()
+  const[idVidrio,setIdVidrio] = useState()
   
 
   const db = getDBConnection();
   
 
-  const msgPrueba = ()=>{
-    const costoM = CostoMateriales(10,10,db);
+  const msgPrueba = async()=>{
+    //const a = parseFloat(10,10)
+    const costoM = await suma(Base,Altura,1);
     Alert.alert(`Costo Materiales: ${costoM}`)
   }
 
@@ -31,6 +33,11 @@ export default function Menu1Screen() {
     console.log('Cliente seleccionado:', idCliente);
   };
 
+   const handleVidriosChange = (item) => {
+    //console.log('Cliente seleccionado:', item);
+    setIdVidrio(item.value)
+    console.log('Cliente seleccionado:', idCliente);
+  };
   
 
 

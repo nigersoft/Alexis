@@ -185,3 +185,15 @@ export const deleteVidrio = async (db, id) => {
     throw error;
   }
 };
+
+///////// Buscar costo del vidrio por id ////////////
+
+export const getCostoVidrioById = async (db, id) => {
+  try {
+    const CostoVidrio = await db.getFirstAsync('select Costo from Vidrios where Id = ?', id);
+    return CostoVidrio.Costo;
+  } catch (error) {
+    console.error('Error al obtener el vidrio por Id:', error);
+    throw error;
+  }
+};
