@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { View, StyleSheet, TextInput,ScrollView,Alert,FlatList} from 'react-native';
 
+
 import { Text, Checkbox } from 'react-native-paper';
 import { Button , Divider} from 'react-native-elements';
 import ClientesDropdown from '../components/ClientesDropdown';
@@ -11,13 +12,14 @@ import VentanaItem from '../components/VentanaItem.jsx';
 import { suma} from '../services/ModuloFunciones.jsx';
 
 export default function Menu1Screen() {
-  const [checked, setChecked] = useState(false);
+ // const [checked, setChecked] = useState(false);
   const[Altura,setAltura] = useState();
   const[Base,setBase]= useState()
   const[Nombre, setNombre] = useState()
   const[idCliente,setIdCliente] = useState()
   const[idVidrio,setIdVidrio] = useState()
   const [Ventanas, setVentanas] = useState([]);
+  const [Total, setTotal]= useState(0)
   
 
   const db = getDBConnection();
@@ -32,17 +34,19 @@ export default function Menu1Screen() {
     agregar(Precio);
   }
 
-  const agregar = (costo)=>{
+  const agregar = (Pfinal)=>{
 
     const nuevaVentana ={
       Id: Date.now().toString(),
       Nombre: `${Nombre}`,
-      Costo:  `${costo}`,
+      Costo:  `${Pfinal}`,
     }
 
     setVentanas(prev => [...prev, nuevaVentana]); // Agrega una ventana a la lista []
 
     setNombre("") // Limpia el campo
+      
+    setTotal(prevTotal => prevTotal + Pfinal); /// lleva la sumatoria de los costos x ventana
   }
 
   const handleEdit = (cliente) => {
@@ -72,27 +76,36 @@ export default function Menu1Screen() {
 
 
   return (
-    <ScrollView style={styles.container}>
+    
 
-      <View style={styles.formContainer}>
+       <View style={styles.container}>
        
-        <View style={styles.checkboxContainer}>
-           
-          <View style={styles.ClienteCointainer}>
-             <Text style={styles.label}>Cliente:</Text>
-             <ClientesDropdown onChange={handleClientesChange} />
-          </View>
-          
-          <Text style={styles.label}>Puerta</Text>
+        {/* <View style={styles.checkboxContainer}>
+
+           <Text style={styles.label}>Puerta</Text>
           <Checkbox
           status={checked ? 'checked' : 'unchecked'}
           onPress={() => setChecked(!checked)}
           />  
-                  
-        </View>
+               
+        </View> */}
+        
+        
+          
+             <Text style={styles.label}>Cliente:</Text>
+             <ClientesDropdown  style={styles.dropdown}
+             onChange={handleClientesChange} />
 
-        <Text style={styles.label}>Vidrio:</Text>
-        <VidriosDropdown onChange={handleVidriosChange} />
+          
+             <Text style={styles.label}>Vidrio:</Text> 
+             <VidriosDropdown onChange={handleVidriosChange} />
+
+          
+              
+    
+
+        
+
         <Text style={styles.label}>Nombre:</Text>
        
               <TextInput
@@ -105,10 +118,10 @@ export default function Menu1Screen() {
 
 
 
-         <View style={styles.MedidasContainer}>
+         
 
            
-
+          <View style={styles.MedidasContainer}>
            <View style={styles.MedidaContiner}>
 
              <Text style={styles.label}>Base:</Text>
@@ -135,8 +148,10 @@ export default function Menu1Screen() {
 
            </View>
 
+         </View>  
 
-         </View>
+
+         
 
 
          <Button
@@ -146,9 +161,13 @@ export default function Menu1Screen() {
                  />     
 
       
-      <Divider style={{ backgroundColor: '#CED0CE', marginVertical: 12 }} />
+         <Divider style={{ backgroundColor: '#CED0CE', marginVertical: 12 }} />
        
-       <FlatList
+     
+       
+    
+
+      <FlatList
         data={Ventanas}
         keyExtractor={(item) => item.Id.toString()}
         renderItem={({ item }) => (
@@ -161,11 +180,17 @@ export default function Menu1Screen() {
           />
         )}
       />
-       
-    </View>
 
-    </ScrollView>
+      <Text style={styles.label}>TOTAL: ₡ {Total}</Text>
 
+     <Button
+                   title="Guardar Cotización"
+                   buttonStyle={styles.updateButton}
+                   onPress={msgPrueba}
+                 />  
+
+    
+</View>
     
   );
 }
@@ -176,21 +201,20 @@ const styles = StyleSheet.create({
    display:'flex',
    
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'right',
     
     //backgroundColor: 'green',
-    marginLeft:3,
+    //marginLeft:3,
+    padding: 16,
     
   },
 
    container: {
-    
+    flex: 1,
     backgroundColor: '#f5f5f5',
+    padding:16,
   },
-  formContainer: {
-    padding: 16,
-    
-  },
+  
   label: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -210,7 +234,7 @@ const styles = StyleSheet.create({
   },
 
   Button: {
-    borderRadius: 8,
+    borderRadius: 10,
     marginTop: 16,
     backgroundColor: '#2089dc',
   },
@@ -227,8 +251,12 @@ const styles = StyleSheet.create({
   },
 
  ClienteCointainer:{
-    display:'flex',
-    flexDirection:'column',
+   display:'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+ 
   },
+
+  
 
 });

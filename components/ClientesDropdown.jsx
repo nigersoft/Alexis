@@ -76,36 +76,22 @@ return (
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-   padding: 5,
-    backgroundColor: '#fff',
+    //flex: 1,
+    padding: 5,
+    
   },
  
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
   dropdown: {
+   width: '100%',            // <- esto es lo que garantiza el ancho completo
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
-    //paddingHorizontal: 12,
-    //height: 50,
+    paddingHorizontal: 12,
+    height: 50,
     //marginBottom: 16,
-    width:180,
-    height:30,
-  },
-  input: {
     backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
   },
   
-  item: { flexDirection: 'row' },
-  apellido: { marginLeft:5 },
 });
 
 

@@ -8,7 +8,7 @@ const VentanaItem = ({ Ventana, onEdit, onDelete }) => {
     <View style={styles.container}>
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{Ventana.Nombre} </Text>
-        <Text style={styles.details}>{Ventana.Costo}</Text>
+        <Text style={styles.details}>₡ {Ventana.Costo}</Text>
        
       </View>
       <View style={styles.actionContainer}>
