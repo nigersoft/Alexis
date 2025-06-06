@@ -77,18 +77,7 @@ export default function Menu1Screen() {
 
          <View style={styles.MedidasContainer}>
 
-           <View style={styles.MedidaContiner}>
-
-               <Text style={styles.label}>Altura:</Text>
-              <TextInput
-                style={styles.input}
-                value={Altura}
-                onChangeText={setAltura}
-                keyboardType="numeric"
-                placeholder="Digite la Altura"
-              />
-
-           </View>
+           
 
            <View style={styles.MedidaContiner}>
 
@@ -101,6 +90,19 @@ export default function Menu1Screen() {
                 placeholder="Digite la Base"
               />
             
+           </View>
+
+           <View style={styles.MedidaContiner}>
+
+               <Text style={styles.label}>Altura:</Text>
+              <TextInput
+                style={styles.input}
+                value={Altura}
+                onChangeText={setAltura}
+                keyboardType="numeric"
+                placeholder="Digite la Altura"
+              />
+
            </View>
 
 

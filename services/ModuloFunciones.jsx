@@ -38,14 +38,14 @@ export const suma = async(B,A,IdVid) =>{
      const LateralMovil = ((Altura - 3.1)/100) * CostoLateralMovil * 2
      const LateralFijo = ((Altura - 2.4)/100) * CostoLateralFijo * 2
      const Cerradura = CostoCerradura
-     const Rodin = 4 * CostoRodin
-     const Empaque = (((Base+Altura)*2)/100)* CostoEmpaque
-     const GuiPlastica = (Base/100) * CostoGuiaPlastica
-     const Felpa = (Base/100) * CostoFelpa
-     const Tornillos = 12 * CostoTornillos
+     const Rodin = (2 * CostoRodin) *2.5
+     const Empaque = (((Base*2)+(Altura*4))/100)* CostoEmpaque
+     const GuiPlastica = (Base/100) * CostoGuiaPlastica *2
+     const Felpa = (Base/100) * CostoFelpa *2
+     const Tornillos = 15 * CostoTornillos
 
-     const Vidrio =(((Base * Altura) -(10.6*Altura)-((19.1*Base)/2) +101.23 )/10000) * CostoVidrio
-     //const Vidrio =((Base * Altura)/10000)  * CostoVidrio
+     //const Vidrio =(((Base * Altura) -(10.6*Altura)-((19.1*Base)/2) +101.23 )/10000) * CostoVidrio
+     const Vidrio =((Base/100) * (Altura/100))  * CostoVidrio
 
      CostoTotal = Cargador + Umbra + Jamba + Inferior + Superior + LateralMovil + LateralFijo + Cerradura + Rodin + Empaque + GuiPlastica + Felpa + Tornillos
       /////////// ver consola
@@ -64,7 +64,9 @@ console.log('Empaque:         ', Empaque);
 console.log('Guía Plástica:   ', GuiPlastica);
 console.log('Felpa:           ', Felpa);
 console.log('Tornillos:       ', Tornillos);
-console.log('Costo Empaque:       ', CostoEmpaque);
+console.log('Vidrio:       ', Vidrio);
+console.log('Costo Total:       ', CostoTotal + Vidrio);
+console.log('Costo Empaque: ', CostoEmpaque);
 console.log('Base:       ', Base);
 console.log('Altura:       ', Altura);
 
