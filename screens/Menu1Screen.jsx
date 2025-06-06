@@ -1,11 +1,12 @@
 import React, { useState,useEffect } from 'react';
-import { View, StyleSheet, TextInput,ScrollView,Alert} from 'react-native';
+import { View, StyleSheet, TextInput,ScrollView,Alert,FlatList} from 'react-native';
 
 import { Text, Checkbox } from 'react-native-paper';
 import { Button , Divider} from 'react-native-elements';
 import ClientesDropdown from '../components/ClientesDropdown';
 import VidriosDropdown from '../components/VidriosDropdown';
 import { getDBConnection} from '../ModuloDb/MDb.js';
+import VentanaItem from '../components/VentanaItem.jsx';
 
 import { suma} from '../services/ModuloFunciones.jsx';
 
@@ -16,6 +17,7 @@ export default function Menu1Screen() {
   const[Nombre, setNombre] = useState()
   const[idCliente,setIdCliente] = useState()
   const[idVidrio,setIdVidrio] = useState()
+  const [Ventanas, setVentanas] = useState([]);
   
 
   const db = getDBConnection();
@@ -23,20 +25,48 @@ export default function Menu1Screen() {
 
   const msgPrueba = async()=>{
     //const a = parseFloat(10,10)
-    const costoM = await suma(Base,Altura,1);
-    Alert.alert(`Costo Materiales: ${costoM}`)
+    const costoM = await suma(Base,Altura,idVidrio);
+    const Precio = costoM * 1.30  /// 30% de utilidad, => PROGRAMAR LUEGO
+    //Alert.alert(`Costo Materiales: ${costoM}`)
+
+    agregar(Precio);
   }
+
+  const agregar = (costo)=>{
+
+    const nuevaVentana ={
+      Id: Date.now().toString(),
+      Nombre: `${Nombre}`,
+      Costo:  `${costo}`,
+    }
+
+    setVentanas(prev => [...prev, nuevaVentana]); // Agrega una ventana a la lista []
+
+    setNombre("") // Limpia el campo
+  }
+
+  const handleEdit = (cliente) => {
+      //No hace nada por el momento // Progrmar despues
+    
+  };
+
+  const handleDelete = (cliente) => {
+    //No hace nada por el momento // Progrmar despues
+    
+  };
+
+
 
   const handleClientesChange = (item) => {
     //console.log('Cliente seleccionado:', item);
     setIdCliente(item.value)
-    console.log('Cliente seleccionado:', idCliente);
+    //console.log('Cliente seleccionado:', idCliente);
   };
 
    const handleVidriosChange = (item) => {
     //console.log('Cliente seleccionado:', item);
     setIdVidrio(item.value)
-    console.log('Cliente seleccionado:', idCliente);
+   // console.log('Cliente seleccionado:', idCliente);
   };
   
 
@@ -62,7 +92,7 @@ export default function Menu1Screen() {
         </View>
 
         <Text style={styles.label}>Vidrio:</Text>
-        <VidriosDropdown onChange={handleClientesChange} />
+        <VidriosDropdown onChange={handleVidriosChange} />
         <Text style={styles.label}>Nombre:</Text>
        
               <TextInput
@@ -117,7 +147,20 @@ export default function Menu1Screen() {
 
       
       <Divider style={{ backgroundColor: '#CED0CE', marginVertical: 12 }} />
-       <Text>Aquí van a ir las cotizaciones</Text>
+       
+       <FlatList
+        data={Ventanas}
+        keyExtractor={(item) => item.Id.toString()}
+        renderItem={({ item }) => (
+          <VentanaItem
+            Ventana={item}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            
+            
+          />
+        )}
+      />
        
     </View>
 
