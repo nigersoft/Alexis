@@ -31,6 +31,18 @@ export default function CotizacionesScreen() {
 
    // Alert.alert(`El último id es: ${idCoti?.Id ?? 'Sin resultados'}`);
    Alert.alert(`El Último id es : ${idCoti.Id}`)
+  // Alert.alert(`El id del vidrio es : ${idVidrio}`)
+  } catch (error) {
+    Alert.alert('Error', error.message);
+  }
+};
+
+// Guarda la cotizacion en la base de datos
+
+const Guardar = async () => {
+  try {
+    const db = await getDBConnection(); // ← Esperar la conexión
+    // GuardarCotizacion (idCliente,Ventanas)
   } catch (error) {
     Alert.alert('Error', error.message);
   }
@@ -56,6 +68,8 @@ export default function CotizacionesScreen() {
     setNombre("") // Limpia el campo
       
     setTotal(prevTotal => prevTotal + Precio); /// lleva la sumatoria de los costos x ventana
+
+    Alert.alert(`El id de la ventana es : ${nuevaVentana.Id}`)
   }
 
   const handleEdit = (cliente) => {

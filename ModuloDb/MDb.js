@@ -215,7 +215,7 @@ export const getCostoVidrioById = async (db, id) => {
  export const IdCotizacion = async (db) => {
    try {
      
-     const Cotizacion = await db.getFirstAsync('select MAX(Id) + 1 as Id from Vidrios');
+     const Cotizacion = await db.getFirstAsync('SELECT IFNULL(MAX(Id) + 1, 1) AS Id FROM Cotizaciones');
      return Cotizacion ;
    } catch (error) {
      console.error('Error al obtener el ultimo Id:', error);
