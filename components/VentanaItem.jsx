@@ -2,13 +2,17 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { formatearColones } from '../services/ModuloFunciones';
 
 const VentanaItem = ({ Ventana, onEdit, onDelete }) => {
+
+  const TotalColones = formatearColones(Ventana.Costo)
+
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{Ventana.Nombre} </Text>
-        <Text style={styles.details}>₡ {Ventana.Costo}</Text>
+        <Text style={styles.details}>{TotalColones}</Text>
        
       </View>
       <View style={styles.actionContainer}>

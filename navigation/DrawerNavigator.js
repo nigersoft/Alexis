@@ -2,7 +2,7 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawerContent from './CustomDrawerContent';
-import Menu1Screen from '../screens/Menu1Screen';
+import CotizacionesScreen from '../screens/CotizacionScreen';
 import Menu2Screen from '../screens/Menu2Screen';
 import ListaClientes from '../screens/ListaClientes';
 import MaterialesScreen from '../screens/MaterialesScreen';
@@ -17,7 +17,7 @@ const Drawer = createDrawerNavigator();
 export default function DrawerNavigator() {
   return (
     <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen name="Menu1" component={Menu1Screen} />
+      <Drawer.Screen name="Cotizaciones" component={CotizacionesScreen} />
       <Drawer.Screen name="Menu2" component={Menu2Screen} />
       {/* Se registran las pantallas asociadas a los submenús de Menu3 */}
       <Drawer.Screen name="ListaClientes" component={ListaClientes} />

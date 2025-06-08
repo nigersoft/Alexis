@@ -197,3 +197,25 @@ export const getCostoVidrioById = async (db, id) => {
     throw error;
   }
 };
+
+/////// Cotizacion por Id /////////////////
+
+// export const getCotizacionById = async (db, id) => {
+//   try {
+//     const Cotizacion = await db.getFirstAsync('select Costo from Cotizaciones where Id = ?', id);
+//     return Cotizacion;
+//   } catch (error) {
+//     console.error('Error al obtener la cotización por Id:', error);
+//     throw error;
+//   }
+// };
+
+export const IdCotizacion = async (db) => {
+  try {
+    const Cotizacion = await db.getFirstAsync('SELECT MAX(Id) AS Id FROM Vidrios');
+    return Cotizacion ;
+  } catch (error) {
+    console.error('Error al obtener el ultimo Id:', error);
+    throw error;
+  }
+};

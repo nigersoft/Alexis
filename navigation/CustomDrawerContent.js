@@ -11,9 +11,9 @@ export default function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       {/* Menu1 */}
-      <ListItem onPress={() => props.navigation.navigate('Menu1')} bottomDivider>
+      <ListItem onPress={() => props.navigation.navigate('Cotizaciones')} bottomDivider>
         <ListItem.Content>
-          <ListItem.Title>Menu1</ListItem.Title>
+          <ListItem.Title>Cotizaciones</ListItem.Title>
         </ListItem.Content>
       </ListItem>
 

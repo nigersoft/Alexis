@@ -4,14 +4,14 @@ import { View, StyleSheet, TextInput,ScrollView,Alert,FlatList} from 'react-nati
 
 import { Text, Checkbox } from 'react-native-paper';
 import { Button , Divider} from 'react-native-elements';
-import ClientesDropdown from '../components/ClientesDropdown';
-import VidriosDropdown from '../components/VidriosDropdown';
-import { getDBConnection} from '../ModuloDb/MDb.js';
+import ClientesDropdown from '../components/ClientesDropdown.jsx';
+import VidriosDropdown from '../components/VidriosDropdown.jsx';
+import { getDBConnection,IdCotizacion} from '../ModuloDb/MDb.js';
 import VentanaItem from '../components/VentanaItem.jsx';
 
-import { suma} from '../services/ModuloFunciones.jsx';
+import { formatearColones, CalcularCostos} from '../services/ModuloFunciones.jsx';
 
-export default function Menu1Screen() {
+export default function CotizacionesScreen() {
  // const [checked, setChecked] = useState(false);
   const[Altura,setAltura] = useState();
   const[Base,setBase]= useState()
@@ -23,30 +23,32 @@ export default function Menu1Screen() {
   
 
   const db = getDBConnection();
+
+  const msgPrueba = ()=>{
+    const idCoti = IdCotizacion();
+    Alert.alert(`El ultimo id es : ${idCoti.Id}`)
+  }
   
 
-  const msgPrueba = async()=>{
+  const Agregar = async()=>{
     //const a = parseFloat(10,10)
-    const costoM = await suma(Base,Altura,idVidrio);
-    const Precio = costoM * 1.30  /// 30% de utilidad, => PROGRAMAR LUEGO
+    const Costo = await CalcularCostos(Base,Altura,idVidrio);
+    const Precio = Costo * 1.30  /// 30% de utilidad, => PROGRAMAR LUEGO
     //Alert.alert(`Costo Materiales: ${costoM}`)
 
-    agregar(Precio);
-  }
-
-  const agregar = (Pfinal)=>{
+    
 
     const nuevaVentana ={
       Id: Date.now().toString(),
       Nombre: `${Nombre}`,
-      Costo:  `${Pfinal}`,
+      Costo:  `${Precio}`,
     }
 
     setVentanas(prev => [...prev, nuevaVentana]); // Agrega una ventana a la lista []
 
     setNombre("") // Limpia el campo
       
-    setTotal(prevTotal => prevTotal + Pfinal); /// lleva la sumatoria de los costos x ventana
+    setTotal(prevTotal => prevTotal + Precio); /// lleva la sumatoria de los costos x ventana
   }
 
   const handleEdit = (cliente) => {
@@ -157,7 +159,7 @@ export default function Menu1Screen() {
          <Button
                    title="Agregar"
                    buttonStyle={styles.updateButton}
-                   onPress={msgPrueba}
+                   onPress={Agregar}
                  />     
 
       
@@ -181,7 +183,7 @@ export default function Menu1Screen() {
         )}
       />
 
-      <Text style={styles.label}>TOTAL: ₡ {Total}</Text>
+      <Text style={styles.label}>TOTAL:  {formatearColones(Total)}</Text>
 
      <Button
                    title="Guardar Cotización"

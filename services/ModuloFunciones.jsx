@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { getDBConnection, getAllMateriales, getCostoVidrioById} from '../ModuloDb/MDb.js';
+import { getDBConnection, getAllMateriales, getCostoVidrioById,getCotizacionById} from '../ModuloDb/MDb.js';
 
 
-
-export const suma = async(B,A,IdVid) =>{
+export const CalcularCostos = async(B,A,IdVid) =>{
 
   try {
      const Base = Number(B)
@@ -82,3 +81,12 @@ console.log('Altura:       ', Altura);
   }
 
 }
+///// dar formato de colones
+
+export const formatearColones = (valor) => {
+  const numero = parseFloat(valor);
+  if (isNaN(numero)) return '₡ 0.00';
+
+  return '₡ ' + numero.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+};
+
