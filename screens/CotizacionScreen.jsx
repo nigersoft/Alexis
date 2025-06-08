@@ -22,12 +22,19 @@ export default function CotizacionesScreen() {
   const [Total, setTotal]= useState(0)
   
 
-  const db = getDBConnection();
+  
 
-  const msgPrueba = ()=>{
-    const idCoti = IdCotizacion();
-    Alert.alert(`El ultimo id es : ${idCoti.Id}`)
+  const msgPrueba = async () => {
+  try {
+    const db = await getDBConnection(); // ← Esperar la conexión
+    const idCoti = await IdCotizacion(db); // ← Esperar el resultado
+
+   // Alert.alert(`El último id es: ${idCoti?.Id ?? 'Sin resultados'}`);
+   Alert.alert(`El Último id es : ${idCoti.Id}`)
+  } catch (error) {
+    Alert.alert('Error', error.message);
   }
+};
   
 
   const Agregar = async()=>{

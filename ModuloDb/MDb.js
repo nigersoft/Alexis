@@ -1,6 +1,8 @@
 // ModuloDb/MDb.js
 import * as FileSystem from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
+//import {getFirstAsync}  from 'expo-sqlite';
+
 import { Asset } from 'expo-asset';
 
 export const getDBConnection = async () => {
@@ -210,12 +212,14 @@ export const getCostoVidrioById = async (db, id) => {
 //   }
 // };
 
-export const IdCotizacion = async (db) => {
-  try {
-    const Cotizacion = await db.getFirstAsync('SELECT MAX(Id) AS Id FROM Vidrios');
-    return Cotizacion ;
-  } catch (error) {
-    console.error('Error al obtener el ultimo Id:', error);
-    throw error;
-  }
-};
+ export const IdCotizacion = async (db) => {
+   try {
+     
+     const Cotizacion = await db.getFirstAsync('select MAX(Id) + 1 as Id from Vidrios');
+     return Cotizacion ;
+   } catch (error) {
+     console.error('Error al obtener el ultimo Id:', error);
+     throw error;
+   }
+ };
+
