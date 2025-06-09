@@ -9,7 +9,7 @@ import VidriosDropdown from '../components/VidriosDropdown.jsx';
 import { getDBConnection,ACTUALIZAR_DB} from '../ModuloDb/MDb.js';
 import VentanaItem from '../components/VentanaItem.jsx';
 
-import { formatearColones, CalcularCostos,IdCotizacion,} from '../services/ModuloFunciones.jsx';
+import { formatearColones, CalcularCostos,IdCotizacion,GuardarCotizacion} from '../services/ModuloFunciones.jsx';
 
 export default function CotizacionesScreen() {
  // const [checked, setChecked] = useState(false);
@@ -47,7 +47,7 @@ export default function CotizacionesScreen() {
   //  const idCoti = await IdCotizacion(db); // ← Esperar el resultado
   // ACTUALIZAR_DB()
    // Alert.alert(`El último id es: ${idCoti?.Id ?? 'Sin resultados'}`);
-   Alert.alert(`Base de Datos Actualizada`)
+   //Alert.alert(`Base de Datos Actualizada`)
   // Alert.alert(`El id del vidrio es : ${idVidrio}`)
   } catch (error) {
     Alert.alert('Error', error.message);
@@ -57,8 +57,16 @@ export default function CotizacionesScreen() {
 // Guarda la cotizacion en la base de datos
 
 const Guardar = async () => {
+
+  // Validación simple
+  if (!Ventanas || Ventanas.length === 0) {
+        Alert.alert("Error", "Debe de Ingresar almenos una ventana");
+        return;
+      }
+
   try {
-    
+    GuardarCotizacion(db,idCliente,Ventanas);
+     Alert.alert(`Funciono!!!`)
     // GuardarCotizacion (idCliente,Ventanas)
   } catch (error) {
     Alert.alert('Error', error.message);
@@ -67,6 +75,18 @@ const Guardar = async () => {
   
 
   const Agregar = async()=>{
+
+    if (
+    !Altura || isNaN(Altura) ||
+    !Base || isNaN(Base) ||
+    !Nombre || Nombre.trim() === '' ||
+    !idCliente ||
+    !idVidrio
+  ) {
+    alert("Por favor complete todos los campos.");
+    return;
+  }
+
     //const a = parseFloat(10,10)
     const Costo = await CalcularCostos(Base,Altura,idVidrio);
     const Precio = Costo * 1.30  /// 30% de utilidad, => PROGRAMAR LUEGO
@@ -143,10 +163,7 @@ const Guardar = async () => {
              <VidriosDropdown onChange={handleVidriosChange} />
 
           
-              
-    
-
-        
+            
 
         <Text style={styles.label}>Nombre:</Text>
        
@@ -157,11 +174,6 @@ const Guardar = async () => {
                 keyboardType="text"
                 placeholder="Digite una descripción"
               />
-
-
-
-         
-
            
           <View style={styles.MedidasContainer}>
            <View style={styles.MedidaContiner}>
@@ -227,8 +239,8 @@ const Guardar = async () => {
 
      <Button
                    title="Guardar Cotización"
-                   buttonStyle={styles.updateButton}
-                   onPress={msgPrueba}
+                   buttonStyle={styles.Button}
+                   onPress={Guardar}
                  />  
 
     
@@ -276,8 +288,8 @@ const styles = StyleSheet.create({
   },
 
   Button: {
-    borderRadius: 10,
-    marginTop: 16,
+    borderRadius: 15,
+    marginBottom: 20,
     backgroundColor: '#2089dc',
   },
 

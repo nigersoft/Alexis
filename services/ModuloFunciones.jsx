@@ -93,19 +93,77 @@ export const formatearColones = (valor) => {
 
 /// Guarda las cotizaciones
 
-export const GuardarCotizacion = async (db, IdCliente,Ventanas)=> {
-  
+export const GuardarCotizacion = async (db, IdCliente,Ventanas) => {
+
+  const { Fecha, Descripcion } = await DescripcionFecha(db,IdCliente);
+
   try {
+    await db.execAsync('BEGIN TRANSACTION');
+
+    // Insertar cotización
     const result = await db.runAsync(
-      'INSERT INTO Vidrios (Descripcion, Costo) VALUES (?, ?)',
-      Descripcion, Costo
+      `INSERT INTO Cotizaciones (IdCliente,Descripcion,Fecha) VALUES (?, ?, ?)`,
+      IdCliente,Fecha, Descripcion
     );
-    return { rowsAffected: result.changes, insertId: result.lastInsertRowId };
+
+    
+
+    // Insertar ventanas asociadas
+    for (const ventana of Ventanas) {
+      const { IdCotizacion, IdVidrio,Nombre, Costo } = ventana;
+
+      await db.runAsync(
+        `INSERT INTO Ventanas (IdCotizacion,IdVidrio,Descripcion,Costo) VALUES (?, ?, ?, ?)`,
+        IdCotizacion,IdVidrio, Nombre, Costo
+      );
+    }
+
+    await db.execAsync('COMMIT');
+   // return { success: true, insertId: idCotizacion };
+
   } catch (error) {
-    console.error('Error al ingresar el Vidrio:', error);
-    throw error;
+    await db.execAsync('ROLLBACK');
+    console.error('Error al guardar cotización:', error);
+    return { success: false, error };
   }
 };
+
+
+/// Descripcion y fecha
+
+const  DescripcionFecha = async(db,Id)=>{
+
+  try{
+
+    const Metafecha = new Date();
+    const dia = Metafecha.getDate().toString().padStart(2, '0');
+    const mes = (Metafecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses van de 0 a 11
+    const anio = Metafecha.getFullYear();
+
+    const FechaFormateada = `${dia}/${mes}/${anio}`;
+
+    const Cliente = await db.getFirstAsync('SELECT Nombre FROM Clientes WHERE ID = ?', Id);
+ /// error si se manda un id no encontrado
+    if (!Cliente) {
+      throw new Error(`Cliente con ID ${Id} no encontrado.`);
+    }
+
+    const Datos = {
+      Fecha:FechaFormateada,
+      Descripcion: `${Cliente.Nombre} - ${FechaFormateada}`
+    }
+
+    return Datos;
+
+  } catch (error){
+    console.error('Error al crear Descripcion:', error);
+
+  }
+
+  
+}
+
+/////// Obtiene el id de la cotizacion
 
  export const IdCotizacion = async (db) => {
    try {
