@@ -8,6 +8,7 @@ export const CalcularCostos = async(B,A,IdVid) =>{
      const Base = Number(B)
      const Altura = Number(A)
      const db = await getDBConnection()
+
      const listaMateriales= await getAllMateriales(db)
      const CostoVidrio = await getCostoVidrioById(db,IdVid)
      
@@ -90,3 +91,29 @@ export const formatearColones = (valor) => {
   return '₡ ' + numero.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 };
 
+/// Guarda las cotizaciones
+
+export const GuardarCotizacion = async (db, IdCliente,Ventanas)=> {
+  
+  try {
+    const result = await db.runAsync(
+      'INSERT INTO Vidrios (Descripcion, Costo) VALUES (?, ?)',
+      Descripcion, Costo
+    );
+    return { rowsAffected: result.changes, insertId: result.lastInsertRowId };
+  } catch (error) {
+    console.error('Error al ingresar el Vidrio:', error);
+    throw error;
+  }
+};
+
+ export const IdCotizacion = async (db) => {
+   try {
+     
+     const Cotizacion = await db.getFirstAsync('SELECT IFNULL(MAX(Id) + 1, 1) AS Id FROM Cotizaciones');
+     return Cotizacion ;
+   } catch (error) {
+     console.error('Error al obtener el ultimo Id:', error);
+     throw error;
+   }
+ };

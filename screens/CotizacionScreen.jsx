@@ -6,10 +6,10 @@ import { Text, Checkbox } from 'react-native-paper';
 import { Button , Divider} from 'react-native-elements';
 import ClientesDropdown from '../components/ClientesDropdown.jsx';
 import VidriosDropdown from '../components/VidriosDropdown.jsx';
-import { getDBConnection,IdCotizacion} from '../ModuloDb/MDb.js';
+import { getDBConnection,ACTUALIZAR_DB} from '../ModuloDb/MDb.js';
 import VentanaItem from '../components/VentanaItem.jsx';
 
-import { formatearColones, CalcularCostos} from '../services/ModuloFunciones.jsx';
+import { formatearColones, CalcularCostos,IdCotizacion,} from '../services/ModuloFunciones.jsx';
 
 export default function CotizacionesScreen() {
  // const [checked, setChecked] = useState(false);
@@ -20,17 +20,34 @@ export default function CotizacionesScreen() {
   const[idVidrio,setIdVidrio] = useState()
   const [Ventanas, setVentanas] = useState([]);
   const [Total, setTotal]= useState(0)
+
+  const [db, setDb] = useState(null);
+
+  useEffect(() => {
+      const loadDatabase = async () => {
+        try {
+          const database = await getDBConnection();
+          setDb(database);
+          
+        } catch (error) {
+          console.error("Error Cargando la Base de datos", error);
+          Alert.alert("Error", "No se pudo cargar la base de datos");
+        }
+      };
+      
+      loadDatabase();
+    }, []);
   
 
   
 
   const msgPrueba = async () => {
   try {
-    const db = await getDBConnection(); // ← Esperar la conexión
-    const idCoti = await IdCotizacion(db); // ← Esperar el resultado
-
+    
+  //  const idCoti = await IdCotizacion(db); // ← Esperar el resultado
+  // ACTUALIZAR_DB()
    // Alert.alert(`El último id es: ${idCoti?.Id ?? 'Sin resultados'}`);
-   Alert.alert(`El Último id es : ${idCoti.Id}`)
+   Alert.alert(`Base de Datos Actualizada`)
   // Alert.alert(`El id del vidrio es : ${idVidrio}`)
   } catch (error) {
     Alert.alert('Error', error.message);
@@ -41,7 +58,7 @@ export default function CotizacionesScreen() {
 
 const Guardar = async () => {
   try {
-    const db = await getDBConnection(); // ← Esperar la conexión
+    
     // GuardarCotizacion (idCliente,Ventanas)
   } catch (error) {
     Alert.alert('Error', error.message);
@@ -54,11 +71,13 @@ const Guardar = async () => {
     const Costo = await CalcularCostos(Base,Altura,idVidrio);
     const Precio = Costo * 1.30  /// 30% de utilidad, => PROGRAMAR LUEGO
     //Alert.alert(`Costo Materiales: ${costoM}`)
-
+    
     
 
     const nuevaVentana ={
       Id: Date.now().toString(),
+      IdCotizacion: IdCotizacion(db),
+      IdVidrio: idVidrio,
       Nombre: `${Nombre}`,
       Costo:  `${Precio}`,
     }

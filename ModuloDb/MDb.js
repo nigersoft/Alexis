@@ -212,14 +212,43 @@ export const getCostoVidrioById = async (db, id) => {
 //   }
 // };
 
- export const IdCotizacion = async (db) => {
-   try {
-     
-     const Cotizacion = await db.getFirstAsync('SELECT IFNULL(MAX(Id) + 1, 1) AS Id FROM Cotizaciones');
-     return Cotizacion ;
-   } catch (error) {
-     console.error('Error al obtener el ultimo Id:', error);
-     throw error;
-   }
- };
+
+
+export const ACTUALIZAR_DB = async () => {
+  const dbName = 'DB_Cotizador.db';
+  const dbDir  = FileSystem.documentDirectory + 'SQLite';
+  const dbPath = `${dbDir}/${dbName}`;
+
+  try {
+    // 1) Crear carpeta SQLite si no existe
+    const dirInfo = await FileSystem.getInfoAsync(dbDir);
+    if (!dirInfo.exists) {
+      await FileSystem.makeDirectoryAsync(dbDir, { intermediates: true });
+    }
+
+    // 2) Copiar base desde assets solo si no existe en dispositivo
+    const dbInfo = await FileSystem.getInfoAsync(dbPath);
+    if (dbInfo.exists) {
+      // Carga el asset .db empaquetado
+      const asset = Asset.fromModule(
+        require('../assets/databases/DB_Cotizador.db')
+      );
+      // Descarga el asset para obtener localUri
+      await asset.downloadAsync();
+
+      // Copia el fichero descargado a la ruta de SQLite
+      await FileSystem.copyAsync({
+        from: asset.localUri,
+        to:   dbPath
+      });
+      console.log('📦 Base de datos copiada a:', dbPath);
+    }
+
+    // 3) Abrir la base de datos con API async
+   // return await SQLite.openDatabaseAsync(dbName);
+  } catch (error) {
+    console.error('Error al configurar la base de datos:', error);
+    throw error;
+  }
+};
 
