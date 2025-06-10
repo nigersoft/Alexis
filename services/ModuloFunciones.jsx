@@ -103,7 +103,7 @@ export const GuardarCotizacion = async (db, IdCliente,Ventanas) => {
     // Insertar cotización
     const result = await db.runAsync(
       `INSERT INTO Cotizaciones (IdCliente,Descripcion,Fecha) VALUES (?, ?, ?)`,
-      IdCliente,Fecha, Descripcion
+      IdCliente, Descripcion,Fecha
     );
 
     
@@ -175,3 +175,29 @@ const  DescripcionFecha = async(db,Id)=>{
      throw error;
    }
  };
+
+
+ //////// FUNCION PARA PRUEBAS //////////////////////////////////
+
+export const VerTABLA = async (db) => {
+  try {
+    const filas = await db.getAllAsync('select * from Cotizaciones');
+
+    if (filas.length === 0) {
+      console.log('La tabla "Ventanas" está vacía.');
+    } else {
+      console.log('Contenido de la tabla Ventanas:');
+      for (let i = 0; i < filas.length; i++) {
+        console.log(`Fila ${i + 1}:`, filas[i]);
+      }
+    }
+
+    return filas;
+  } catch (error) {
+    console.error('Error al obtener los datos de la tabla Ventanas:', error);
+    throw error;
+  }
+};
+
+
+///////////////////////////////////////////////////////////////

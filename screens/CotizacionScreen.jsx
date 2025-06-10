@@ -9,7 +9,7 @@ import VidriosDropdown from '../components/VidriosDropdown.jsx';
 import { getDBConnection,ACTUALIZAR_DB} from '../ModuloDb/MDb.js';
 import VentanaItem from '../components/VentanaItem.jsx';
 
-import { formatearColones, CalcularCostos,IdCotizacion,GuardarCotizacion} from '../services/ModuloFunciones.jsx';
+import { formatearColones, CalcularCostos,IdCotizacion,GuardarCotizacion,VerTABLA} from '../services/ModuloFunciones.jsx';
 
 export default function CotizacionesScreen() {
  // const [checked, setChecked] = useState(false);
@@ -43,7 +43,7 @@ export default function CotizacionesScreen() {
 
   const msgPrueba = async () => {
   try {
-    
+    VerTABLA(db);
   //  const idCoti = await IdCotizacion(db); // ← Esperar el resultado
   // ACTUALIZAR_DB()
    // Alert.alert(`El último id es: ${idCoti?.Id ?? 'Sin resultados'}`);
@@ -240,7 +240,7 @@ const Guardar = async () => {
      <Button
                    title="Guardar Cotización"
                    buttonStyle={styles.Button}
-                   onPress={Guardar}
+                   onPress={msgPrueba}
                  />  
 
     
