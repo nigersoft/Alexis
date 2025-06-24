@@ -16,10 +16,10 @@ const VentanaItem = ({ Ventana, onEdit, onDelete }) => {
        
       </View>
       <View style={styles.actionContainer}>
-        <TouchableOpacity onPress={() => onEdit(Vidrio)} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => onEdit(Ventana)} style={styles.actionButton}>
           <Icon name="edit" type="material" color="#2089dc" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => onDelete(Vidrio.Id)} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => onDelete(Ventana.Id)} style={styles.actionButton}>
           <Icon name="delete" type="material" color="#ff0000" />
         </TouchableOpacity>
       </View>

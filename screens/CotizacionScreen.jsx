@@ -11,7 +11,7 @@ import VentanaItem from '../components/VentanaItem.jsx';
 
 import { formatearColones, CalcularCostos,IdCotizacion,GuardarCotizacion,VerTABLA} from '../services/ModuloFunciones.jsx';
 
-export default function CotizacionesScreen() {
+export default function CotizacionesScreen({ navigation }) {
  // const [checked, setChecked] = useState(false);
   const[Altura,setAltura] = useState();
   const[Base,setBase]= useState()
@@ -100,6 +100,9 @@ const Guardar = async () => {
       IdVidrio: idVidrio,
       Nombre: `${Nombre}`,
       Costo:  `${Precio}`,
+      Base: Base,
+      Altura:Altura,
+
     }
 
     setVentanas(prev => [...prev, nuevaVentana]); // Agrega una ventana a la lista []
@@ -111,10 +114,28 @@ const Guardar = async () => {
     Alert.alert(`El id de la ventana es : ${nuevaVentana.Id}`)
   }
 
-  const handleEdit = (cliente) => {
+  const handleEdit = (ventana) => {
+    navigation.navigate('EdiVentana', { ventana,  actualizarVentana: handleActualizarVentana  });
       //No hace nada por el momento // Progrmar despues
     
   };
+
+  const handleActualizarVentana = (ventanaActualizada) => {
+  setVentanas(prev =>
+    prev.map(v => v.Id === ventanaActualizada.Id ? ventanaActualizada : v)
+  );
+
+  // Recalcula el total
+  const nuevoTotal = Ventanas.reduce((sum, v) => {
+    if (v.Id === ventanaActualizada.Id) {
+      return sum + parseFloat(ventanaActualizada.Costo);
+    } else {
+      return sum + parseFloat(v.Costo);
+    }
+  }, 0);
+  setTotal(nuevoTotal);
+};
+
 
   const handleDelete = (cliente) => {
     //No hace nada por el momento // Progrmar despues

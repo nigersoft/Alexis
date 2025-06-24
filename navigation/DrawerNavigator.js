@@ -11,6 +11,8 @@ import NuevoClienteScreen from '../screens/NuevoClienteScreen';
 import EditarClienteScreen from '../screens/EditarClienteScreen';
 import EditarVidrioScrm from '../screens/EditarVidrioScreen';
 import NuevoVidrio from '../screens/NuevoVidrio';
+import EditarVentana from '../screens/EditarVentana';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -27,6 +29,7 @@ export default function DrawerNavigator() {
       <Drawer.Screen name="EditarCliente" component={EditarClienteScreen}  options={{ unmountOnBlur: true }} />
       <Drawer.Screen name="NuevoVidrio" component={NuevoVidrio} />
       <Drawer.Screen name="EditarVidrio" component={EditarVidrioScrm} />
+      <Drawer.Screen name="EdiVentana" component={EditarVentana} />
     </Drawer.Navigator>
   );
 }
