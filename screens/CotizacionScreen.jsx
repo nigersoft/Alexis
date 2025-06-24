@@ -137,8 +137,17 @@ const Guardar = async () => {
 };
 
 
-  const handleDelete = (cliente) => {
-    //No hace nada por el momento // Progrmar despues
+  const handleDelete = (Id) => {
+
+  const ventanaEliminada = Ventanas.find(v => v.Id === Id);
+  const nuevasVentanas = Ventanas.filter(v => v.Id !== Id);
+  setVentanas(nuevasVentanas);
+
+  // Actualizar el total
+  const nuevoTotal = nuevasVentanas.reduce((sum, v) => sum + parseFloat(v.Costo), 0);
+  setTotal(nuevoTotal);
+
+  Alert.alert("Eliminado", `La ventana ${ventanaEliminada?.Nombre} fue eliminada.`);
     
   };
 
