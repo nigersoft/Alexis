@@ -6,7 +6,7 @@ import { Text, Checkbox } from 'react-native-paper';
 import { Button , Divider} from 'react-native-elements';
 import ClientesDropdown from '../components/ClientesDropdown.jsx';
 import VidriosDropdown from '../components/VidriosDropdown.jsx';
-import { getDBConnection,ACTUALIZAR_DB} from '../ModuloDb/MDb.js';
+import { getDBConnection,ACTUALIZAR_DB,EXPORTAR_DB} from '../ModuloDb/MDb.js';
 import VentanaItem from '../components/VentanaItem.jsx';
 
 import { formatearColones, CalcularCostos,IdCotizacion,GuardarCotizacion,VerTABLA} from '../services/ModuloFunciones.jsx';
@@ -270,7 +270,7 @@ const Guardar = async () => {
      <Button
                    title="Guardar Cotización"
                    buttonStyle={styles.Button}
-                   onPress={msgPrueba}
+                   onPress={Guardar}
                  />  
 
     

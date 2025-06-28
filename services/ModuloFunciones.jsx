@@ -110,11 +110,11 @@ export const GuardarCotizacion = async (db, IdCliente,Ventanas) => {
 
     // Insertar ventanas asociadas
     for (const ventana of Ventanas) {
-      const { IdCotizacion, IdVidrio,Nombre, Costo } = ventana;
+      const { IdCotizacion, IdVidrio,Nombre, Costo, Base, Altura} = ventana;
 
       await db.runAsync(
-        `INSERT INTO Ventanas (IdCotizacion,IdVidrio,Descripcion,Costo) VALUES (?, ?, ?, ?)`,
-        IdCotizacion,IdVidrio, Nombre, Costo
+        `INSERT INTO Ventanas (IdCotizacion,IdVidrio,Descripcion,Costo,Base,Altura) VALUES (?, ?, ?, ?,?,?)`,
+        IdCotizacion,IdVidrio, Nombre, Costo,Base,Altura
       );
     }
 
@@ -169,7 +169,7 @@ const  DescripcionFecha = async(db,Id)=>{
    try {
      
      const Cotizacion = await db.getFirstAsync('SELECT IFNULL(MAX(Id) + 1, 1) AS Id FROM Cotizaciones');
-     return Cotizacion ;
+     return Cotizacion.Id ;
    } catch (error) {
      console.error('Error al obtener el ultimo Id:', error);
      throw error;

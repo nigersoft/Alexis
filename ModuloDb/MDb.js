@@ -1,5 +1,7 @@
 // ModuloDb/MDb.js
 import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+
 import * as SQLite from 'expo-sqlite';
 //import {getFirstAsync}  from 'expo-sqlite';
 
@@ -211,6 +213,22 @@ export const getCostoVidrioById = async (db, id) => {
 //     throw error;
 //   }
 // };
+//////////////////////////////////////////////////////////////
+
+export const getAllCotizaciones = async (db) => {
+  try {
+    const Cotizaciones = await db.getAllAsync('Select Coti.Id,Coti.Descripcion,Cli.Nombre, Cli.Telefono,Sum(V.Costo) as Costo from Cotizaciones as Coti inner JOIN Clientes as Cli on Coti.IdCliente = Cli.Id Inner JOIN Ventanas as V ON Coti.Id = V.IdCotizacion GROUP by Coti.Id');
+    return Cotizaciones;
+  } catch (error) {
+    console.error('Error al obtener las Cotizaciones:', error);
+    throw error;
+  }
+};
+
+
+
+
+///////////////////////////////////////////////////////////////
 
 
 
@@ -252,3 +270,38 @@ export const ACTUALIZAR_DB = async () => {
   }
 };
 
+export const EXPORTAR_DB = async () => {
+  const dbName = 'DB_Cotizador.db';
+  const dbDir = FileSystem.documentDirectory + 'SQLite';
+  const dbPath = `${dbDir}/${dbName}`;
+
+  const exportPath = FileSystem.documentDirectory + `backup_${dbName}`;
+
+  try {
+    // Verifica si existe la base de datos original
+    const dbInfo = await FileSystem.getInfoAsync(dbPath);
+    if (!dbInfo.exists) {
+      console.warn('⚠️ La base de datos no existe en:', dbPath);
+      return;
+    }
+
+    // Copia la base al directorio de documentos accesible
+    await FileSystem.copyAsync({
+      from: dbPath,
+      to: exportPath,
+    });
+
+    console.log('✅ Base de datos exportada a:', exportPath);
+
+    // Abre menú para compartir
+    const isAvailable = await Sharing.isAvailableAsync();
+    if (isAvailable) {
+      await Sharing.shareAsync(exportPath);
+    } else {
+      console.warn('❌ Compartir no está disponible en este dispositivo.');
+    }
+  } catch (error) {
+    console.error('❌ Error al exportar y compartir la base de datos:', error);
+    throw error;
+  }
+};

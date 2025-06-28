@@ -18,9 +18,9 @@ export default function CustomDrawerContent(props) {
       </ListItem>
 
       {/* Menu2 */}
-      <ListItem onPress={() => props.navigation.navigate('Menu2')} bottomDivider>
+      <ListItem onPress={() => props.navigation.navigate('CotizacionesGen')} bottomDivider>
         <ListItem.Content>
-          <ListItem.Title>Menu2</ListItem.Title>
+          <ListItem.Title>Cotizaciones Generadas</ListItem.Title>
         </ListItem.Content>
       </ListItem>
 
