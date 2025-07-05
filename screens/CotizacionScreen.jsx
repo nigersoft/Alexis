@@ -96,7 +96,7 @@ const Guardar = async () => {
 
     const nuevaVentana ={
       Id: Date.now().toString(),
-      IdCotizacion: IdCotizacion(db),
+     // IdCotizacion: await IdCotizacion(db),
       IdVidrio: idVidrio,
       Nombre: `${Nombre}`,
       Costo:  `${Precio}`,

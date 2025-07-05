@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getDBConnection, getAllMateriales, getCostoVidrioById,getCotizacionById} from '../ModuloDb/MDb.js';
-
+import { Alert} from 'react-native';
 
 export const CalcularCostos = async(B,A,IdVid) =>{
 
@@ -106,14 +106,18 @@ export const GuardarCotizacion = async (db, IdCliente,Ventanas) => {
       IdCliente, Descripcion,Fecha
     );
 
-    
+    const IdCotizacion = result.lastInsertRowId; // ✅ Este es el ID REAL recién insertado
+
+    // Alert.alert(`Id Cotizacion: `,IdCotizacion)
+     console.log('Resultado del insert:', result);
+     console.log('Resultado del insert:', IdCotizacion);
 
     // Insertar ventanas asociadas
     for (const ventana of Ventanas) {
-      const { IdCotizacion, IdVidrio,Nombre, Costo, Base, Altura} = ventana;
+      const {  IdVidrio,Nombre, Costo, Base, Altura} = ventana;
 
       await db.runAsync(
-        `INSERT INTO Ventanas (IdCotizacion,IdVidrio,Descripcion,Costo,Base,Altura) VALUES (?, ?, ?, ?,?,?)`,
+        `INSERT INTO Ventanas (IdCotizacion,IdVidrio,Descripcion,Costo,Base,Altura) VALUES (?, ?, ?, ?, ?, ?)`,
         IdCotizacion,IdVidrio, Nombre, Costo,Base,Altura
       );
     }
@@ -122,8 +126,10 @@ export const GuardarCotizacion = async (db, IdCliente,Ventanas) => {
    // return { success: true, insertId: idCotizacion };
 
   } catch (error) {
-    await db.execAsync('ROLLBACK');
+    
     console.error('Error al guardar cotización:', error);
+    await db.execAsync('ROLLBACK');
+     Alert.alert(`ERROR al Guardar Cotización!!!`)
     return { success: false, error };
   }
 };
@@ -165,16 +171,16 @@ const  DescripcionFecha = async(db,Id)=>{
 
 /////// Obtiene el id de la cotizacion
 
- export const IdCotizacion = async (db) => {
-   try {
+//  export const IdCotizacion = async (db) => {
+//    try {
      
-     const Cotizacion = await db.getFirstAsync('SELECT IFNULL(MAX(Id) + 1, 1) AS Id FROM Cotizaciones');
-     return Cotizacion.Id ;
-   } catch (error) {
-     console.error('Error al obtener el ultimo Id:', error);
-     throw error;
-   }
- };
+//      const Cotizacion = await db.getFirstAsync('SELECT IFNULL(MAX(Id) + 1, 1) AS Id FROM Cotizaciones');
+//      return parseInt(Cotizacion.Id, 10); 
+//    } catch (error) {
+//      console.error('Error al obtener el ultimo Id:', error);
+//      throw error;
+//    }
+//  };
 
 
  //////// FUNCION PARA PRUEBAS //////////////////////////////////
