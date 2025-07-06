@@ -224,6 +224,21 @@ export const getAllCotizaciones = async (db) => {
     throw error;
   }
 };
+///////////////////////////////////////////////////////////////
+
+export const deleteCotizacionConVentanas = async (db, idCotizacion) => {
+  try {
+    await db.execAsync('BEGIN TRANSACTION');
+
+    await db.runAsync(`DELETE FROM Ventanas WHERE IdCotizacion = ?`, [idCotizacion]);
+    await db.runAsync(`DELETE FROM Cotizaciones WHERE Id = ?`, [idCotizacion]);
+
+    await db.execAsync('COMMIT');
+  } catch (error) {
+    await db.execAsync('ROLLBACK');
+    throw error;
+  }
+};
 
 
 

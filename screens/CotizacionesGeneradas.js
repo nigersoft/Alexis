@@ -1,13 +1,15 @@
-// screens/Menu2Screen.js
-// screens/ClientesListScreen.jsx
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import CotizacionItem from '../components/CotizacionItem.jsx';
-import { getDBConnection, getAllCotizaciones, deleteCliente } from '../ModuloDb/MDb.js';
+import {
+  getDBConnection,
+  getAllCotizaciones,
+  deleteCotizacionConVentanas
+} from '../ModuloDb/MDb.js';
 
 const CotizacionesGeneradas = ({ navigation }) => {
-  const [Cotizaciones, setCotizaciones] = useState([]);
+  const [cotizaciones, setCotizaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [db, setDb] = useState(null);
 
@@ -16,70 +18,63 @@ const CotizacionesGeneradas = ({ navigation }) => {
       try {
         const database = await getDBConnection();
         setDb(database);
-        await loadCOtizaciones(database);
+        await cargarCotizaciones(database);
       } catch (error) {
-        console.error("Error Cargando database", error);
+        console.error("Error al cargar la base de datos", error);
         Alert.alert("Error", "No se pudo cargar la base de datos");
       } finally {
         setLoading(false);
       }
     };
-    
+
     loadDatabase();
   }, []);
 
   useEffect(() => {
-    // Recargar las cotizaciones cuando la pantalla reciba el foco
     const unsubscribe = navigation.addListener('focus', () => {
       if (db) {
-        loadCOtizaciones(db);
+        cargarCotizaciones(db);
       }
     });
-
     return unsubscribe;
   }, [navigation, db]);
 
-  const loadCOtizaciones = async (database) => {
+  const cargarCotizaciones = async (database) => {
     try {
-      const cotizacionData = await getAllCotizaciones(database);
-      setCotizaciones(cotizacionData );
+      const data = await getAllCotizaciones(database);
+      setCotizaciones(data);
     } catch (error) {
-      console.error("Error Cargando Cotizaciones", error);
-      Alert.alert("Error", "No se pudieron cargar las Cotizaciones");
+      console.error("Error cargando cotizaciones", error);
+      Alert.alert("Error", "No se pudieron cargar las cotizaciones");
     }
-  };
-
-  const handleEdit = (cliente) => {
-   // navigation.navigate('EditarCliente', { cliente }); = Modificar
-    //navigation.push('EditarCliente', { cliente });
-    
   };
 
   const handleDelete = (id) => {
     Alert.alert(
       "Confirmar eliminación",
-      "¿Estás seguro de que deseas eliminar esta cotización?",
+      "¿Deseas eliminar esta cotización y todas sus ventanas asociadas?",
       [
-        {
-          text: "Cancelar",
-          style: "cancel"
-        },
+        { text: "Cancelar", style: "cancel" },
         {
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
             try {
-              await deleteCliente(db, id);
-              await loadCOtizaciones(db);
-              Alert.alert("Éxito", "Cotización eliminada correctamente");
+              await deleteCotizacionConVentanas(db, id);
+              await cargarCotizaciones(db);
+              Alert.alert("✅ Eliminado", "Cotización eliminada correctamente");
             } catch (error) {
-              console.error("Error deleting cotizacion", error);
-              Alert.alert("Error", "No se pudo eliminar la Cotización");
+              console.error("Error eliminando cotización", error);
+              Alert.alert("Error", "No se pudo eliminar la cotización");
             }
           }
         }
       ]
     );
+  };
+
+  const handleEdit = (cotizacion) => {
+    // navegación futura para editar la cotización completa
   };
 
   if (loading) {
@@ -93,22 +88,20 @@ const CotizacionesGeneradas = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={Cotizaciones}
+        data={cotizaciones}
         keyExtractor={(item) => item.Id.toString()}
         renderItem={({ item }) => (
           <CotizacionItem
             cotizacion={item}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            
-            
           />
         )}
       />
       <Button
-        title="Agregar Cotizacion"
+        title="Nueva Cotización"
         buttonStyle={styles.addButton}
-        onPress={() => navigation.navigate('NuevoCliente')}
+        onPress={() => navigation.navigate('Cotizaciones')}
       />
     </View>
   );
@@ -118,7 +111,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    
   },
   centered: {
     flex: 1,
@@ -126,14 +118,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addButton: {
-    position: 'relative',
-    margin: 50,
-    marginBottom:80,
-    borderRadius: 8,
-    paddingBottom: 10,
+    margin: 24,
+    borderRadius: 10,
+    backgroundColor: '#2196F3',
   },
 });
 
 export default CotizacionesGeneradas;
-
-

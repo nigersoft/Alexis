@@ -1,255 +1,148 @@
-import React, { useState,useEffect } from 'react';
-import { View, StyleSheet, TextInput,ScrollView,Alert,FlatList} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TextInput, ScrollView, Alert, FlatList } from 'react-native';
+import { Text, Divider } from 'react-native-paper';
+import { Button } from 'react-native-elements';
 
+import ClientesDropdown from '../components/ClientesDropdown';
+import VidriosDropdown from '../components/VidriosDropdown';
+import VentanaItem from '../components/VentanaItem';
+import FormularioVentana from '../components/FormularioVentana';
 
-import { Text, Checkbox } from 'react-native-paper';
-import { Button , Divider} from 'react-native-elements';
-import ClientesDropdown from '../components/ClientesDropdown.jsx';
-import VidriosDropdown from '../components/VidriosDropdown.jsx';
-import { getDBConnection,ACTUALIZAR_DB,EXPORTAR_DB} from '../ModuloDb/MDb.js';
-import VentanaItem from '../components/VentanaItem.jsx';
+import {
+  getDBConnection,
+  EXPORTAR_DB,
+  ACTUALIZAR_DB,
+} from '../ModuloDb/MDb';
 
-import { formatearColones, CalcularCostos,IdCotizacion,GuardarCotizacion,VerTABLA} from '../services/ModuloFunciones.jsx';
+import {
+  formatearColones,
+  CalcularCostos,
+  GuardarCotizacion,
+  VerTABLA,
+} from '../services/ModuloFunciones';
 
 export default function CotizacionesScreen({ navigation }) {
- // const [checked, setChecked] = useState(false);
-  const[Altura,setAltura] = useState();
-  const[Base,setBase]= useState()
-  const[Nombre, setNombre] = useState()
-  const[idCliente,setIdCliente] = useState()
-  const[idVidrio,setIdVidrio] = useState()
+  const [Altura, setAltura] = useState('');
+  const [Base, setBase] = useState('');
+  const [Nombre, setNombre] = useState('');
+  const [idCliente, setIdCliente] = useState(null);
+  const [idVidrio, setIdVidrio] = useState(null);
   const [Ventanas, setVentanas] = useState([]);
-  const [Total, setTotal]= useState(0)
-
+  const [Total, setTotal] = useState(0);
   const [db, setDb] = useState(null);
 
   useEffect(() => {
-      const loadDatabase = async () => {
-        try {
-          const database = await getDBConnection();
-          setDb(database);
-          
-        } catch (error) {
-          console.error("Error Cargando la Base de datos", error);
-          Alert.alert("Error", "No se pudo cargar la base de datos");
-        }
-      };
-      
-      loadDatabase();
-    }, []);
-  
-
-  
-
-  const msgPrueba = async () => {
-  try {
-    VerTABLA(db);
-  //  const idCoti = await IdCotizacion(db); // ← Esperar el resultado
-  // ACTUALIZAR_DB()
-   // Alert.alert(`El último id es: ${idCoti?.Id ?? 'Sin resultados'}`);
-   //Alert.alert(`Base de Datos Actualizada`)
-  // Alert.alert(`El id del vidrio es : ${idVidrio}`)
-  } catch (error) {
-    Alert.alert('Error', error.message);
-  }
-};
-
-// Guarda la cotizacion en la base de datos
-
-const Guardar = async () => {
-
-  // Validación simple
-  if (!Ventanas || Ventanas.length === 0) {
-        Alert.alert("Error", "Debe de Ingresar almenos una ventana");
-        return;
+    const loadDatabase = async () => {
+      try {
+        const database = await getDBConnection();
+        setDb(database);
+      } catch (error) {
+        console.error("Error cargando la base de datos", error);
+        Alert.alert("Error", "No se pudo cargar la base de datos");
       }
+    };
+    loadDatabase();
+  }, []);
 
-  try {
-    GuardarCotizacion(db,idCliente,Ventanas);
-     Alert.alert(`Funciono!!!`)
-    // GuardarCotizacion (idCliente,Ventanas)
-  } catch (error) {
-    Alert.alert('Error', error.message);
-  }
-};
-  
-
-  const Agregar = async()=>{
-
+  const Agregar = async () => {
     if (
-    !Altura || isNaN(Altura) ||
-    !Base || isNaN(Base) ||
-    !Nombre || Nombre.trim() === '' ||
-    !idCliente ||
-    !idVidrio
-  ) {
-    alert("Por favor complete todos los campos.");
-    return;
-  }
-
-    //const a = parseFloat(10,10)
-    const Costo = await CalcularCostos(Base,Altura,idVidrio);
-    const Precio = Costo * 1.30  /// 30% de utilidad, => PROGRAMAR LUEGO
-    //Alert.alert(`Costo Materiales: ${costoM}`)
-    
-    
-
-    const nuevaVentana ={
-      Id: Date.now().toString(),
-     // IdCotizacion: await IdCotizacion(db),
-      IdVidrio: idVidrio,
-      Nombre: `${Nombre}`,
-      Costo:  `${Precio}`,
-      Base: Base,
-      Altura:Altura,
-
+      !Altura || isNaN(Altura) ||
+      !Base || isNaN(Base) ||
+      !Nombre || Nombre.trim() === '' ||
+      !idCliente ||
+      !idVidrio
+    ) {
+      alert("Por favor complete todos los campos.");
+      return;
     }
 
-    setVentanas(prev => [...prev, nuevaVentana]); // Agrega una ventana a la lista []
+    const Costo = await CalcularCostos(Base, Altura, idVidrio);
+    const Precio = Costo * 1.30;
 
-    setNombre("") // Limpia el campo
-      
-    setTotal(prevTotal => prevTotal + Precio); /// lleva la sumatoria de los costos x ventana
+    const nuevaVentana = {
+      Id: Date.now().toString(),
+      IdVidrio: idVidrio,
+      Nombre,
+      Costo: `${Precio}`,
+      Base,
+      Altura,
+    };
 
-    Alert.alert(`El id de la ventana es : ${nuevaVentana.Id}`)
-  }
+    setVentanas(prev => [...prev, nuevaVentana]);
+    setNombre('');
+    setBase('');
+    setAltura('');
+    setTotal(prevTotal => prevTotal + Precio);
+
+    Alert.alert(`Ventana agregada con ID: ${nuevaVentana.Id}`);
+  };
+
+  const Guardar = async () => {
+    if (!Ventanas || Ventanas.length === 0) {
+      Alert.alert("Error", "Debe ingresar al menos una ventana.");
+      return;
+    }
+
+    try {
+      await GuardarCotizacion(db, idCliente, Ventanas);
+      Alert.alert("¡Cotización guardada exitosamente!");
+      setVentanas([]);
+      setTotal(0);
+    } catch (error) {
+      Alert.alert("Error al guardar", error.message);
+    }
+  };
 
   const handleEdit = (ventana) => {
-    navigation.navigate('EdiVentana', { ventana,  actualizarVentana: handleActualizarVentana  });
-      //No hace nada por el momento // Progrmar despues
-    
+    navigation.navigate('EdiVentana', {
+      ventana,
+      actualizarVentana: handleActualizarVentana,
+    });
   };
 
   const handleActualizarVentana = (ventanaActualizada) => {
-  setVentanas(prev =>
-    prev.map(v => v.Id === ventanaActualizada.Id ? ventanaActualizada : v)
-  );
+    const nuevasVentanas = Ventanas.map(v =>
+      v.Id === ventanaActualizada.Id ? ventanaActualizada : v
+    );
+    setVentanas(nuevasVentanas);
 
-  // Recalcula el total
-  const nuevoTotal = Ventanas.reduce((sum, v) => {
-    if (v.Id === ventanaActualizada.Id) {
-      return sum + parseFloat(ventanaActualizada.Costo);
-    } else {
-      return sum + parseFloat(v.Costo);
-    }
-  }, 0);
-  setTotal(nuevoTotal);
-};
-
+    const nuevoTotal = nuevasVentanas.reduce((sum, v) => sum + parseFloat(v.Costo), 0);
+    setTotal(nuevoTotal);
+  };
 
   const handleDelete = (Id) => {
+    const ventanaEliminada = Ventanas.find(v => v.Id === Id);
+    const nuevasVentanas = Ventanas.filter(v => v.Id !== Id);
+    setVentanas(nuevasVentanas);
 
-  const ventanaEliminada = Ventanas.find(v => v.Id === Id);
-  const nuevasVentanas = Ventanas.filter(v => v.Id !== Id);
-  setVentanas(nuevasVentanas);
+    const nuevoTotal = nuevasVentanas.reduce((sum, v) => sum + parseFloat(v.Costo), 0);
+    setTotal(nuevoTotal);
 
-  // Actualizar el total
-  const nuevoTotal = nuevasVentanas.reduce((sum, v) => sum + parseFloat(v.Costo), 0);
-  setTotal(nuevoTotal);
-
-  Alert.alert("Eliminado", `La ventana ${ventanaEliminada?.Nombre} fue eliminada.`);
-    
+    Alert.alert("Eliminado", `La ventana "${ventanaEliminada?.Nombre}" fue eliminada.`);
   };
-
-
-
-  const handleClientesChange = (item) => {
-    //console.log('Cliente seleccionado:', item);
-    setIdCliente(item.value)
-    //console.log('Cliente seleccionado:', idCliente);
-  };
-
-   const handleVidriosChange = (item) => {
-    //console.log('Cliente seleccionado:', item);
-    setIdVidrio(item.value)
-   // console.log('Cliente seleccionado:', idCliente);
-  };
-  
-
 
   return (
-    
-
-       <View style={styles.container}>
-       
-        {/* <View style={styles.checkboxContainer}>
-
-           <Text style={styles.label}>Puerta</Text>
-          <Checkbox
-          status={checked ? 'checked' : 'unchecked'}
-          onPress={() => setChecked(!checked)}
-          />  
-               
-        </View> */}
-        
-        
-          
-             <Text style={styles.label}>Cliente:</Text>
-             <ClientesDropdown  style={styles.dropdown}
-             onChange={handleClientesChange} />
-
-          
-             <Text style={styles.label}>Vidrio:</Text> 
-             <VidriosDropdown onChange={handleVidriosChange} />
-
-          
-            
-
-        <Text style={styles.label}>Nombre:</Text>
-       
-              <TextInput
-                style={styles.input}
-                value={Nombre}
-                onChangeText={setNombre}
-                keyboardType="text"
-                placeholder="Digite una descripción"
-              />
-           
-          <View style={styles.MedidasContainer}>
-           <View style={styles.MedidaContiner}>
-
-             <Text style={styles.label}>Base:</Text>
-              <TextInput
-                style={styles.input}
-                value={Base}
-                onChangeText={setBase}
-                keyboardType="numeric"
-                placeholder="Digite la Base"
-              />
-            
-           </View>
-
-           <View style={styles.MedidaContiner}>
-
-               <Text style={styles.label}>Altura:</Text>
-              <TextInput
-                style={styles.input}
-                value={Altura}
-                onChangeText={setAltura}
-                keyboardType="numeric"
-                placeholder="Digite la Altura"
-              />
-
-           </View>
-
-         </View>  
-
-
-         
-
-
-         <Button
-                   title="Agregar"
-                   buttonStyle={styles.updateButton}
-                   onPress={Agregar}
-                 />     
-
+    <ScrollView contentContainerStyle={styles.container}>
       
-         <Divider style={{ backgroundColor: '#CED0CE', marginVertical: 12 }} />
-       
-     
-       
-    
+      <FormularioVentana
+  Nombre={Nombre}
+  setNombre={setNombre}
+  Base={Base}
+  setBase={setBase}
+  Altura={Altura}
+  setAltura={setAltura}
+  idCliente={idCliente}
+  setIdCliente={setIdCliente}
+  idVidrio={idVidrio}
+  setIdVidrio={setIdVidrio}
+  onSubmit={Agregar}
+  textoBoton="Agregar ventana"
+  mostrarCliente={true}
+  mostrarVidrio={true}
+/>
+      <Divider style={styles.divider} />
+
+      <Text style={styles.sectionTitle}>Ventanas agregadas:</Text>
 
       <FlatList
         data={Ventanas}
@@ -259,88 +152,46 @@ const Guardar = async () => {
             Ventana={item}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            
-            
           />
         )}
       />
 
-      <Text style={styles.label}>TOTAL:  {formatearColones(Total)}</Text>
+      <Text style={styles.totalText}>TOTAL: {formatearColones(Total)}</Text>
 
-     <Button
-                   title="Guardar Cotización"
-                   buttonStyle={styles.Button}
-                   onPress={Guardar}
-                 />  
-
-    
-</View>
-    
+      <Button
+        title="Guardar Cotización"
+        buttonStyle={styles.saveButton}
+        onPress={Guardar}
+      />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  
-  checkboxContainer: {
-   display:'flex',
-   
-    flexDirection: 'row',
-    alignItems: 'right',
-    
-    //backgroundColor: 'green',
-    //marginLeft:3,
+  container: {
     padding: 16,
-    
-  },
-
-   container: {
-    flex: 1,
     backgroundColor: '#f5f5f5',
-    padding:16,
   },
-  
-  label: {
+  divider: {
+    marginVertical: 16,
+    backgroundColor: '#ccc',
+  },
+  sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 8,
   },
-  input: {
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
+  totalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    marginTop: 20,
+    marginBottom: 10,
+    color: '#000',
   },
   saveButton: {
+    backgroundColor: '#2196F3',
     borderRadius: 8,
-    marginTop: 16,
+    marginBottom: 30,
   },
-
-  Button: {
-    borderRadius: 15,
-    marginBottom: 20,
-    backgroundColor: '#2089dc',
-  },
-
-  MedidasContainer: {
-    display:'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  MedidaContiner:{
-  marginLeft: 10,
-  marginRight: 10
-  },
-
- ClienteCointainer:{
-   display:'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
- 
-  },
-
-  
-
 });

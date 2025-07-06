@@ -1,140 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Alert, Text, TextInput } from 'react-native';
-import { Button } from 'react-native-elements';
-import { getDBConnection, updateCliente } from '../ModuloDb/MDb.js';
+import { ScrollView, Alert, StyleSheet } from 'react-native';
+import FormularioVentana from '../components/FormularioVentana';
 
 const EditarVentana = ({ route, navigation }) => {
   const { ventana, actualizarVentana } = route.params;
-  const [nombre, setNombre] = useState('');
-  const [costo, setCosto] = useState(0);
-  const [base, setBase] = useState(0);
-  const [altura, setAltura] = useState(0);
-  const [db, setDb] = useState(null);
 
-  // Sincronizar el formulario con el tablaVentanas cada vez que cambie
+  const [nombre, setNombre] = useState('');
+  const [costo, setCosto] = useState('');
+  const [base, setBase] = useState('');
+  const [altura, setAltura] = useState('');
+
   useEffect(() => {
     if (ventana) {
-      setNombre(ventana.Nombre);
-      setCosto(ventana.Costo);
-      setBase(ventana.Base);
-      setAltura(ventana.Altura);
+      setNombre(ventana.Nombre ?? '');
+      setCosto(String(ventana.Costo ?? ''));
+      setBase(String(ventana.Base ?? ''));
+      setAltura(String(ventana.Altura ?? ''));
     }
   }, [ventana]);
 
-  // Cargar la base de datos
-  useEffect(() => {
-    const loadDatabase = async () => {
-      try {
-        const database = await getDBConnection();
-        setDb(database);
-      } catch (error) {
-        console.error('Error loading database', error);
-        Alert.alert('Error', 'No se pudo cargar la base de datos');
-      }
-    };
-    loadDatabase();
-  }, []);
-
-  const handleUpdate = async () => {
-    // Validación simple
-    if (!nombre.trim() || !costo.trim() || !base.trim() || !altura.trim()) {
-      Alert.alert('Error', 'Todos los campos son obligatorios');
+  const handleUpdate = () => {
+    if (
+      !nombre.trim() ||
+      isNaN(base) || base === '' ||
+      isNaN(altura) || altura === '' ||
+      isNaN(costo) || costo === ''
+    ) {
+      Alert.alert('Error', 'Todos los campos deben estar completos y numéricos donde corresponde.');
       return;
     }
 
-    try {
-      const updatedVentana = {
-              Id: ventana.Id,
-              IdCotizacion:ventana.IdCotizacion,
-              IdVidrio:ventana.IdVidrio,
-              Nombre: nombre,
-              Costo: costo,
-              Base: base,
-              Altura:altura,
-      };
+    const updatedVentana = {
+      Id: ventana.Id,
+      IdCotizacion: ventana.IdCotizacion,
+      IdVidrio: ventana.IdVidrio,
+      Nombre: nombre.trim(),
+      Costo: parseFloat(costo),
+      Base: parseFloat(base),
+      Altura: parseFloat(altura),
+    };
 
-      actualizarVentana(updatedVentana) // Devuelve la ventana actualizada
-      Alert.alert('Éxito', 'Ventana actualizada correctamente');
-      navigation.goBack();
-    } catch (error) {
-      console.error('Error actualizando Ventana', error);
-      Alert.alert('Error', 'No se pudo actualizar la ventana');
-    }
+    actualizarVentana(updatedVentana);
+    Alert.alert('✅ Éxito', 'Ventana actualizada correctamente');
+    navigation.goBack();
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.formContainer}>
-        <Text style={styles.label}>Nombre</Text>
-        <TextInput
-          style={styles.input}
-          value={nombre}
-          onChangeText={setNombre}
-          placeholder="Nombre"
-        />
-
-        <Text style={styles.label}>Base</Text>
-        <TextInput
-          style={styles.input}
-          value={base}
-          onChangeText={setBase}
-          placeholder="Base"
-        />
-
-        <Text style={styles.label}>Altura</Text>
-        <TextInput
-          style={styles.input}
-          value={altura}
-          onChangeText={setAltura}
-          placeholder="Altura"
-         // keyboardType="phone-pad"
-        />
-
-        <Text style={styles.label}>Costo</Text>
-        <TextInput
-          style={styles.input}
-          value={costo}
-          onChangeText={setCosto}
-          placeholder="Costo"
-          //keyboardType="email-address"
-          //autoCapitalize="none"
-        />
-
-        <Button
-          title="Actualizar"
-          buttonStyle={styles.updateButton}
-          onPress={handleUpdate}
-        />
-      </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <FormularioVentana
+        Nombre={nombre}
+        setNombre={setNombre}
+        Base={base}
+        setBase={setBase}
+        Altura={altura}
+        setAltura={setAltura}
+        Costo={costo}
+        setCosto={setCosto}
+        onSubmit={handleUpdate}
+        textoBoton="Actualizar ventana"
+        mostrarCliente={false}
+        mostrarVidrio={false}
+      />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  formContainer: {
     padding: 16,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  input: {
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  updateButton: {
-    borderRadius: 8,
-    marginTop: 16,
-    backgroundColor: '#2089dc',
+    backgroundColor: '#f5f5f5',
   },
 });
 
