@@ -74,7 +74,7 @@ const CotizacionesGeneradas = ({ navigation }) => {
   };
 
   const handleEdit = (cotizacion) => {
-    // navegación futura para editar la cotización completa
+    navigation.navigate('EditarCotizacion', { cotizacion});
   };
 
   if (loading) {

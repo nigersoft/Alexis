@@ -11,7 +11,7 @@ const VentanaItem = ({ Ventana, onEdit, onDelete }) => {
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
-        <Text style={styles.name}>{Ventana.Nombre} </Text>
+        <Text style={styles.name}>{Ventana.Descripcion} </Text>
         <Text style={styles.details}>{TotalColones}</Text>
        
       </View>

@@ -217,7 +217,7 @@ export const getCostoVidrioById = async (db, id) => {
 
 export const getAllCotizaciones = async (db) => {
   try {
-    const Cotizaciones = await db.getAllAsync('Select Coti.Id,Coti.Descripcion,Cli.Nombre, Cli.Telefono,Sum(V.Costo) as Costo from Cotizaciones as Coti inner JOIN Clientes as Cli on Coti.IdCliente = Cli.Id Inner JOIN Ventanas as V ON Coti.Id = V.IdCotizacion GROUP by Coti.Id');
+    const Cotizaciones = await db.getAllAsync('Select Coti.Id,Cli.Id as IdCliente,Coti.Descripcion,Cli.Nombre, Cli.Telefono,Sum(V.Costo) as Costo from Cotizaciones as Coti inner JOIN Clientes as Cli on Coti.IdCliente = Cli.Id Inner JOIN Ventanas as V ON Coti.Id = V.IdCotizacion GROUP by Coti.Id');
     return Cotizaciones;
   } catch (error) {
     console.error('Error al obtener las Cotizaciones:', error);
@@ -240,6 +240,31 @@ export const deleteCotizacionConVentanas = async (db, idCotizacion) => {
   }
 };
 
+///////////////////////////////////////////////////////////////
+
+export const deleteVentanas = async (db, idVentana) => {
+  try {
+    await db.execAsync('BEGIN TRANSACTION');
+
+    await db.runAsync(`DELETE FROM Ventanas WHERE Id = ?`, [idVentana]);
+   
+
+    await db.execAsync('COMMIT');
+  } catch (error) {
+    await db.execAsync('ROLLBACK');
+    throw error;
+  }
+};
+
+///////////////////////////////////////////////////////////////
+
+export const getVentanasPorCotizacion = async (db, idCotizacion) => {
+  const result = await db.getAllAsync(
+    `SELECT Id,IdCotizacion,IdVidrio,Descripcion,Costo,Base,Altura FROM Ventanas WHERE IdCotizacion = ?`,
+    [idCotizacion]
+  );
+  return result;
+};
 
 
 

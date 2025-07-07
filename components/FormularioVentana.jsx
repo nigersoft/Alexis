@@ -6,8 +6,8 @@ import ClientesDropdown from './ClientesDropdown';
 import VidriosDropdown from './VidriosDropdown';
 
 export default function FormularioVentana({
-  Nombre,
-  setNombre,
+  Descripcion,
+  setDescripcion,
   Base,
   setBase,
   Altura,
@@ -39,11 +39,11 @@ export default function FormularioVentana({
         </>
       )}
 
-      <Text style={styles.label}>Nombre</Text>
+      <Text style={styles.label}>Descripcion</Text>
       <TextInput
         style={styles.input}
-        value={Nombre}
-        onChangeText={setNombre}
+        value={Descripcion}
+        onChangeText={setDescripcion}
         placeholder="Ej: Ventana Principal"
       />
 

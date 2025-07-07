@@ -24,7 +24,7 @@ import {
 export default function CotizacionesScreen({ navigation }) {
   const [Altura, setAltura] = useState('');
   const [Base, setBase] = useState('');
-  const [Nombre, setNombre] = useState('');
+  const [Descripcion, setDescripcion] = useState('');
   const [idCliente, setIdCliente] = useState(null);
   const [idVidrio, setIdVidrio] = useState(null);
   const [Ventanas, setVentanas] = useState([]);
@@ -48,7 +48,7 @@ export default function CotizacionesScreen({ navigation }) {
     if (
       !Altura || isNaN(Altura) ||
       !Base || isNaN(Base) ||
-      !Nombre || Nombre.trim() === '' ||
+      !Descripcion || Descripcion.trim() === '' ||
       !idCliente ||
       !idVidrio
     ) {
@@ -62,14 +62,14 @@ export default function CotizacionesScreen({ navigation }) {
     const nuevaVentana = {
       Id: Date.now().toString(),
       IdVidrio: idVidrio,
-      Nombre,
+      Descripcion,
       Costo: `${Precio}`,
       Base,
       Altura,
     };
 
     setVentanas(prev => [...prev, nuevaVentana]);
-    setNombre('');
+    setDescripcion('');
     setBase('');
     setAltura('');
     setTotal(prevTotal => prevTotal + Precio);
@@ -110,23 +110,41 @@ export default function CotizacionesScreen({ navigation }) {
     setTotal(nuevoTotal);
   };
 
-  const handleDelete = (Id) => {
-    const ventanaEliminada = Ventanas.find(v => v.Id === Id);
-    const nuevasVentanas = Ventanas.filter(v => v.Id !== Id);
-    setVentanas(nuevasVentanas);
+const handleDelete = (Id) => {
+  const ventanaEliminada = Ventanas.find(v => v.Id === Id);
 
-    const nuevoTotal = nuevasVentanas.reduce((sum, v) => sum + parseFloat(v.Costo), 0);
-    setTotal(nuevoTotal);
+  Alert.alert(
+    "¿Eliminar ventana?",
+    `¿Estás seguro de que deseas eliminar la ventana "${ventanaEliminada?.Nombre}"?`,
+    [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () => {
+          const nuevasVentanas = Ventanas.filter(v => v.Id !== Id);
+          setVentanas(nuevasVentanas);
 
-    Alert.alert("Eliminado", `La ventana "${ventanaEliminada?.Nombre}" fue eliminada.`);
-  };
+          const nuevoTotal = nuevasVentanas.reduce((sum, v) => sum + parseFloat(v.Costo), 0);
+          setTotal(nuevoTotal);
+
+          Alert.alert("✅ Eliminado", `La ventana "${ventanaEliminada?.Nombre}" fue eliminada.`);
+        },
+      },
+    ]
+  );
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       
       <FormularioVentana
-  Nombre={Nombre}
-  setNombre={setNombre}
+  Descripcion={Descripcion}
+  setDescripcion={setDescripcion}
   Base={Base}
   setBase={setBase}
   Altura={Altura}

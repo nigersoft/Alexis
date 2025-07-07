@@ -5,14 +5,14 @@ import FormularioVentana from '../components/FormularioVentana';
 const EditarVentana = ({ route, navigation }) => {
   const { ventana, actualizarVentana } = route.params;
 
-  const [nombre, setNombre] = useState('');
+  const [Descripcion, setDescripcion] = useState('');
   const [costo, setCosto] = useState('');
   const [base, setBase] = useState('');
   const [altura, setAltura] = useState('');
 
   useEffect(() => {
     if (ventana) {
-      setNombre(ventana.Nombre ?? '');
+      setDescripcion(ventana.Descripcion ?? '');
       setCosto(String(ventana.Costo ?? ''));
       setBase(String(ventana.Base ?? ''));
       setAltura(String(ventana.Altura ?? ''));
@@ -21,7 +21,7 @@ const EditarVentana = ({ route, navigation }) => {
 
   const handleUpdate = () => {
     if (
-      !nombre.trim() ||
+      !Descripcion.trim() ||
       isNaN(base) || base === '' ||
       isNaN(altura) || altura === '' ||
       isNaN(costo) || costo === ''
@@ -34,7 +34,7 @@ const EditarVentana = ({ route, navigation }) => {
       Id: ventana.Id,
       IdCotizacion: ventana.IdCotizacion,
       IdVidrio: ventana.IdVidrio,
-      Nombre: nombre.trim(),
+      Descripcion: Descripcion.trim(),
       Costo: parseFloat(costo),
       Base: parseFloat(base),
       Altura: parseFloat(altura),
@@ -48,8 +48,8 @@ const EditarVentana = ({ route, navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <FormularioVentana
-        Nombre={nombre}
-        setNombre={setNombre}
+        Descripcion={Descripcion}
+        setDescripcion={setDescripcion}
         Base={base}
         setBase={setBase}
         Altura={altura}
