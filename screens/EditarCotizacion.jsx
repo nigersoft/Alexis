@@ -11,34 +11,46 @@ const EditarCotizacion = ({ route, navigation }) => {
   const { cotizacion } = route.params;
   const [db, setDb] = useState(null);
   const [ventanas, setVentanas] = useState([]);
-  const [idCliente, setIdCliente] = useState(cotizacion.IdCliente);
+  const [idCliente, setIdCliente] = useState();
   const [margen, setMargen] = useState(1.3); // Margen de ganancia
-  const [Descripcion, setDescripcion] = useState(cotizacion.Descripcion)
+  const [Descripcion, setDescripcion] = useState()
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        const database = await getDBConnection();
-        setDb(database);
-        await cargarDatos(database);
-      } catch (error) {
-        console.error(error);
-        Alert.alert("Error", "No se pudo cargar la cotización");
-      }
-    };
-    init();
-  }, []);
+  const init = async () => {
+    try {
+      const database = await getDBConnection();
+      setDb(database);
+      setVentanas([]);
+      await cargarDatos(database);
+      setIdCliente(cotizacion.IdCliente);
+      setDescripcion(cotizacion.Descripcion);
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "No se pudo cargar la cotización");
+    }
+  };
+  init();
+}, [cotizacion]);
 
   const cargarDatos = async (database) => {
     const v = await getVentanasPorCotizacion(database, cotizacion.Id);
+
+    console.log("Ventanas cargadas:", v);  // <-- revisa aqui
+    setIdCliente(cotizacion.IdCliente);
+    setDescripcion(cotizacion.Descripcion);
+
     setVentanas(v);
   };
 
-  const handleActualizarVentana = (ventanaActualizada) => {
-    setVentanas(prev =>
-      prev.map(v => v.Id === ventanaActualizada.Id ? ventanaActualizada : v)
-    );
+  const handleEdit = (ventana) => {
+    // setVentanas(prev =>
+    //   prev.map(v => v.Id === ventana.Id ? ventana : v)
+    // );
+
+    navigation.navigate('EdiVentana', { ventana});
   };
+
+ 
 
  
 
@@ -85,49 +97,48 @@ const handleDeleteVentana = (id) => {
   };
 
   return (
-    <FlatList
-      data={ventanas}
-      keyExtractor={(item) => item.Id.toString()}
-      ListHeaderComponent={
-        <>
-          <Text style={styles.label}>Descripcion:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={cotizacion.Descripcion}
-                  onChangeText={setDescripcion}
-                  placeholder="Ej: Ventana Principal"
-                />
+    
+    <View style={styles.container}>
+        <Text style={styles.label}>Descripcion:</Text>
+            <TextInput
+              style={styles.input}
+              value={Descripcion}          // <-- aquí uso el estado local
+              onChangeText={setDescripcion}
+              placeholder="Ej: Ventana Principal"
+             />
+
 
           <Text style={styles.label}>Cliente</Text>
           <ClientesDropdown
             onChange={(item) => setIdCliente(item.value)}
-            initialValue={idCliente}
+            //initialValue={idCliente}
+            value={idCliente}
           />
 
           <Text style={styles.label}>Ventanas:</Text>
-        </>
-      }
+
+      <FlatList
+      data={ventanas}
+      keyExtractor={(item) => item.Id.toString()}
+      
       renderItem={({ item }) => (
         <VentanaItem
           Ventana={item}
-          onEdit={(v) =>
-            navigation.navigate('EdiVentana', {
-              ventana: v,
-              actualizarVentana: handleActualizarVentana,
-            })
-          }
+          onEdit={handleEdit}
+          
           onDelete={handleDeleteVentana}
         />
       )}
-      ListFooterComponent={
-        <Button
+      
+    />
+
+
+       <Button
           title="Guardar Cambios"
           buttonStyle={styles.button}
           onPress={guardarCambios}
-        />
-      }
-      contentContainerStyle={styles.container}
-    />
+        />   
+    </View>
   );
 };
 

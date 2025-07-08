@@ -114,11 +114,11 @@ export const GuardarCotizacion = async (db, IdCliente,Ventanas) => {
 
     // Insertar ventanas asociadas
     for (const ventana of Ventanas) {
-      const {  IdVidrio,Nombre, Costo, Base, Altura} = ventana;
+      const {  IdVidrio,Descripcion, Costo, Base, Altura} = ventana;
 
       await db.runAsync(
         `INSERT INTO Ventanas (IdCotizacion,IdVidrio,Descripcion,Costo,Base,Altura) VALUES (?, ?, ?, ?, ?, ?)`,
-        IdCotizacion,IdVidrio, Nombre, Costo,Base,Altura
+        IdCotizacion,IdVidrio, Descripcion, Costo,Base,Altura
       );
     }
 
