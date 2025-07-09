@@ -266,6 +266,32 @@ export const getVentanasPorCotizacion = async (db, idCotizacion) => {
   return result;
 };
 
+//////////////////////////////////////////////////////////
+
+export const ExportarVentanasPorCotizacion = async (db, idCotizacion) => {
+  const result = await db.getAllAsync(
+    `select v.Descripcion as Descripcion, vid.Descripcion as Vidrio, v.Costo as Costo,v.Base as Base, v.Altura as Altura from Ventanas as v inner join Vidrios as vid on vid.Id = v.IdVidrio where v.IdCotizacion = ?`,
+    [idCotizacion]
+  );
+  return result;
+};
+
+//////////////////////////////////////////////////////////////
+export const getClientePorId = async (db, idCliente) => {
+  try {
+    const result = await db.getFirstAsync(
+      `SELECT * FROM Clientes WHERE Id = ?`,
+      idCliente
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error al obtener cliente por ID:", error);
+    return null;
+  }
+};
+
+
 
 
 ///////////////////////////////////////////////////////////////

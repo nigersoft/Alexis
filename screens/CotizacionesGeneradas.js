@@ -85,6 +85,11 @@ const CotizacionesGeneradas = ({ navigation }) => {
     );
   }
 
+  const handleExport = (cotizacion) => {
+  navigation.navigate('ExportarCotizacion', { cotizacion });
+};
+
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -95,6 +100,7 @@ const CotizacionesGeneradas = ({ navigation }) => {
             cotizacion={item}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onExport={handleExport}
           />
         )}
       />

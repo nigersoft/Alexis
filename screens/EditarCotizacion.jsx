@@ -110,9 +110,11 @@ const handleDeleteVentana = (id) => {
 
           <Text style={styles.label}>Cliente</Text>
           <ClientesDropdown
+            key={idCliente}  // 🔄 fuerza recreación del componente al cambiar idCliente
+            initialValue={idCliente}
             onChange={(item) => setIdCliente(item.value)}
-            //initialValue={idCliente}
-            value={idCliente}
+            
+            
           />
 
           <Text style={styles.label}>Ventanas:</Text>

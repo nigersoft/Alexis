@@ -13,6 +13,7 @@ import EditarVidrioScrm from '../screens/EditarVidrioScreen';
 import NuevoVidrio from '../screens/NuevoVidrio';
 import EditarVentana from '../screens/EditarVentana';
 import EditarCotizacion from '../screens/EditarCotizacion';
+import ExportarCotizacion from '../screens/ExportarCotizacion';
 
 
 const Drawer = createDrawerNavigator();
@@ -32,6 +33,8 @@ export default function DrawerNavigator() {
       <Drawer.Screen name="EditarVidrio" component={EditarVidrioScrm} />
       <Drawer.Screen name="EdiVentana" component={EditarVentana} />
       <Drawer.Screen name="EditarCotizacion" component={EditarCotizacion} />
+      <Drawer.Screen name="ExportarCotizacion" component={ExportarCotizacion} />
+
 
     </Drawer.Navigator>
   );

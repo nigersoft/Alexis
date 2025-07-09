@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { formatearColones } from '../services/ModuloFunciones';
 
-const CotizacionItem = ({ cotizacion, onEdit, onDelete }) => {
+const CotizacionItem = ({ cotizacion, onEdit, onDelete, onExport  }) => {
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
@@ -19,6 +19,11 @@ const CotizacionItem = ({ cotizacion, onEdit, onDelete }) => {
         <TouchableOpacity onPress={() => onDelete(cotizacion.Id)} style={styles.actionButton}>
           <Icon name="delete" type="material" color="#ff0000" />
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => onExport(cotizacion)} style={styles.actionButton}>
+        <Icon name="share" type="material" color="#4CAF50" />
+        </TouchableOpacity>
+
       </View>
     </View>
   );
