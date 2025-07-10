@@ -1,3 +1,4 @@
+// Refactorizar
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Alert,ScrollView } from 'react-native';
 import { Button, Text } from 'react-native-elements';
