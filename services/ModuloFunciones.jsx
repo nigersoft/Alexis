@@ -123,6 +123,7 @@ export const GuardarCotizacion = async (db, IdCliente,Ventanas) => {
     }
 
     await db.execAsync('COMMIT');
+     await db.closeAsync();
    // return { success: true, insertId: idCotizacion };
 
   } catch (error) {
@@ -206,4 +207,18 @@ export const VerTABLA = async (db) => {
 };
 
 
-///////////////////////////////////////////////////////////////
+///////////////////////// Actualizar ventana //////////////////////////////////////
+
+export const actualizarVentana = async (db, ventana) => {
+  const { Id, IdCotizacion, IdVidrio, Descripcion, Costo,Base,Altura } = ventana;
+  try {
+    const result = await db.runAsync(
+      'UPDATE Ventanas SET IdCotizacion = ?, IdVidrio = ?, Descripcion = ?, Costo = ?, Base = ?, Altura = ? WHERE Id = ?',
+      IdCotizacion, IdVidrio, Descripcion, Costo, Base, Altura, Id
+    );
+    return result.changes;
+  } catch (error) {
+    console.error('Error al actualizar la ventana de la cotización:', error);
+    throw error;
+  }
+};

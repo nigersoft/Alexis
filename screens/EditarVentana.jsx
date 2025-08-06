@@ -1,14 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, Alert, StyleSheet } from 'react-native';
 import FormularioVentana from '../components/FormularioVentana';
+import { actualizarVentana } from '../services/ModuloFunciones';
+import { getDBConnection } from '../ModuloDb/MDb';
 
 const EditarVentana = ({ route, navigation }) => {
-  const { ventana, actualizarVentana } = route.params;
+  const { ventana } = route.params;
 
   const [Descripcion, setDescripcion] = useState('');
   const [costo, setCosto] = useState('');
   const [base, setBase] = useState('');
   const [altura, setAltura] = useState('');
+   const [db, setDb] = useState(null);
+
+  useEffect(() => {
+      const loadDatabase = async () => {
+        try {
+          const database = await getDBConnection();
+          setDb(database);
+          
+        } catch (error) {
+          console.error("Error al cargar la base de datos", error);
+          Alert.alert("Error", "No se pudo cargar la base de datos");
+        }
+      };
+  
+      loadDatabase();
+    }, []); 
 
   useEffect(() => {
     if (ventana) {
@@ -16,6 +34,8 @@ const EditarVentana = ({ route, navigation }) => {
       setCosto(String(ventana.Costo ?? ''));
       setBase(String(ventana.Base ?? ''));
       setAltura(String(ventana.Altura ?? ''));
+
+    
     }
   }, [ventana]);
 
@@ -40,7 +60,7 @@ const EditarVentana = ({ route, navigation }) => {
       Altura: parseFloat(altura),
     };
 
-    actualizarVentana(updatedVentana);
+    actualizarVentana(db,updatedVentana);
     Alert.alert('✅ Éxito', 'Ventana actualizada correctamente');
     navigation.goBack();
   };
