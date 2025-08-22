@@ -202,7 +202,7 @@ export const getCostoVidrioById = async (db, id) => {
   }
 };
 
-/////// Cotizacion por Id /////////////////
+/////// Cotizacion por Id ///////////////
 
 // export const getCotizacionById = async (db, id) => {
 //   try {
