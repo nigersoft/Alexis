@@ -3,8 +3,8 @@ import { View, StyleSheet, TextInput, ScrollView, Alert, FlatList } from 'react-
 import { Text, Divider } from 'react-native-paper';
 import { Button } from 'react-native-elements';
 
-import ClientesDropdown from '../components/ClientesDropdown';
-import VidriosDropdown from '../components/VidriosDropdown';
+//import ClientesDropdown from '../components/ClientesDropdown';
+//import VidriosDropdown from '../components/VidriosDropdown';
 import VentanaItem from '../components/VentanaItem';
 import FormularioVentana from '../components/FormularioVentana';
 

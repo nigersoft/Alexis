@@ -49,8 +49,6 @@ const NuevoClienteScreen = ({ navigation }) => {
         Telefono: telefono,
         Email: email,
       };
-      
-      //Alert.alert("Debug Cliente", JSON.stringify(newCliente, null, 2));
 
       await insertCliente(db, newCliente);
       Alert.alert("Éxito", "Cliente agregado correctamente");

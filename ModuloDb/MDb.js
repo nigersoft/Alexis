@@ -70,7 +70,7 @@ export const insertCliente = async (db, cliente) => {
   try {
     const result = await db.runAsync(
       'INSERT INTO Clientes (Nombre, Apellido, Telefono, Email) VALUES (?, ?, ?, ?)',
-      [Nombre, cliente.Apellido, Telefono, Email]
+      Nombre, Apellido, Telefono, Email
     );
     return { rowsAffected: result.changes, insertId: result.lastInsertRowId };
   } catch (error) {
@@ -202,7 +202,7 @@ export const getCostoVidrioById = async (db, id) => {
   }
 };
 
-/////// Cotizacion por Id /////////////////
+/////// Cotizacion por Id ///////////////
 
 // export const getCotizacionById = async (db, id) => {
 //   try {
