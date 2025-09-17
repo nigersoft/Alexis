@@ -70,7 +70,7 @@ export const insertCliente = async (db, cliente) => {
   try {
     const result = await db.runAsync(
       'INSERT INTO Clientes (Nombre, Apellido, Telefono, Email) VALUES (?, ?, ?, ?)',
-      Nombre, Apellido, Telefono, Email
+      [Nombre, cliente.Apellido, Telefono, Email]
     );
     return { rowsAffected: result.changes, insertId: result.lastInsertRowId };
   } catch (error) {

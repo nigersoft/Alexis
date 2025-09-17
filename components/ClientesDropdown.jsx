@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useCallback} from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { getDBConnection, getAllClientes } from '../ModuloDb/MDb.js';
+import { useFocusEffect } from '@react-navigation/native'; 
 
 const ClientesDropdown = ({ onChange, initialValue = null }) => {
   const [clientes, setClientes] = useState([]);
   const [selected, setSelected] = useState(initialValue);
   const [loading, setLoading] = useState(true);
+  const [db,setDb]= useState(null)
 
   const loadClientes = async (cnx) => {
     const listaClientes = await getAllClientes(cnx);
@@ -34,6 +36,7 @@ const ClientesDropdown = ({ onChange, initialValue = null }) => {
     (async () => {
       try {
         const connection = await getDBConnection();
+        setDb(connection)
         await loadClientes(connection);
       } catch (error) {
         console.error('Error cargando Clientes:', error);
@@ -41,6 +44,15 @@ const ClientesDropdown = ({ onChange, initialValue = null }) => {
       }
     })();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      
+      if (db) {
+        loadClientes(db);
+      }
+    }, [db, loadClientes])
+  );
 
   const handleSelect = (item) => {
     setSelected(item.value);
