@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert, FlatList,TextInput } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Button } from 'react-native-elements';
-import { getDBConnection, getVentanasPorCotizacion , deleteVentanas} from '../ModuloDb/MDb';
+import { getDBConnection, getVentanasPorCotizacion , deleteVentanas, UpdateCotizacion} from '../ModuloDb/MDb';
 import VentanaItem from '../components/VentanaItem';
 import ClientesDropdown from '../components/ClientesDropdown';
 
@@ -89,6 +89,7 @@ const handleDeleteVentana = (id) => {
   const guardarCambios = async () => {
     try {
       // Acá podrías hacer update del cliente, del margen, etc.
+      UpdateCotizacion(db,cotizacion.Id,Descripcion)
       Alert.alert('✅ Guardado', 'Cambios de la cotización actualizados');
       navigation.goBack();
     } catch (error) {
